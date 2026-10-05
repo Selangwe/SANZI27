@@ -1,5 +1,5 @@
 /**
- * Hand-drawn SVG stand-ins for the four envelope PNGs.
+ * Hand-drawn SVG stand-ins for the envelope PNGs.
  * They render automatically whenever a PNG in /public/envelope is missing,
  * so the intro works (and looks finished) before the real artwork arrives.
  */
@@ -37,28 +37,6 @@ export function EnvelopeBodyArt() {
       />
       <path d="M0 490 L332 238 Q350 226 368 238 L700 490" fill="none" stroke="#b9a88d" strokeOpacity="0.35" />
       <rect x="0.5" y="0.5" width="699" height="499" rx="10" fill="none" stroke="#b9a88d" strokeOpacity="0.35" />
-    </svg>
-  );
-}
-
-export function EnvelopeFlapArt() {
-  return (
-    <svg viewBox="0 0 700 280" preserveAspectRatio="none" className="h-full w-full overflow-visible" aria-hidden="true">
-      <defs>
-        <linearGradient id="flap-fill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#f2eadd" />
-          <stop offset="1" stopColor="#e8dcc8" />
-        </linearGradient>
-        <filter id="flap-shadow" x="-10%" y="-10%" width="120%" height="140%">
-          <feDropShadow dx="0" dy="5" stdDeviation="6" floodColor="#5d4c36" floodOpacity="0.22" />
-        </filter>
-      </defs>
-      <path
-        d="M10 0 L690 0 Q700 0 692 7 L372 266 Q350 283 328 266 L8 7 Q0 0 10 0 Z"
-        fill="url(#flap-fill)"
-        filter="url(#flap-shadow)"
-      />
-      <path d="M8 7 L328 266 Q350 283 372 266 L692 7" fill="none" stroke="#b9a88d" strokeOpacity="0.45" />
     </svg>
   );
 }

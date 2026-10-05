@@ -3,7 +3,7 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { wedding } from "@/content/wedding";
-import { CARD_MARGIN_VMIN, InvitationCardFace } from "../envelope/InvitationCardFace";
+import { InvitationCardFace } from "../envelope/InvitationCardFace";
 import { ImageSlot } from "../ui/ImageSlot";
 import { ScrollCue } from "../ui/ScrollCue";
 
@@ -21,7 +21,7 @@ export function OpeningCover({ revealed }: { revealed: boolean }) {
   return (
     <div ref={ref} className="relative">
       <div className="paper sticky top-0 h-[100dvh] overflow-hidden">
-        <motion.div className="absolute" style={{ inset: `${CARD_MARGIN_VMIN}vmin`, scale: cardScale }}>
+        <motion.div className="absolute" style={{ inset: "var(--card-margin)", scale: cardScale }}>
           <InvitationCardFace />
         </motion.div>
         <motion.div className="absolute inset-0 bg-ink" style={{ opacity: cardShade }} />

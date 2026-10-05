@@ -77,15 +77,30 @@ export const wedding = {
     eyebrow: "You are cordially invited",
     tapHint: "Tap to open",
     /**
-     * Transparent PNG layers. Export all four from the same artboard so they
-     * line up — see README.md → "Envelope PNGs" for exact sizes.
+     * Transparent PNG layers, all cut from the client's envelope artwork
+     * (612 × 407) so they line up. See public/envelope/README.md.
      */
     images: {
-      body: "/envelope/envelope-body.png",
+      pocket: "/envelope/envelope-pocket.png",
       flap: "/envelope/envelope-flap.png",
+      flowers: "/envelope/envelope-flowers.png",
       seal: "/envelope/wax-seal.png",
-      card: "/envelope/invitation-card.png",
     },
+  },
+
+  /* ── The invitation card inside the envelope ────────────────────────────── */
+  card: {
+    /** Optional opening line; leave quote "" to hide it */
+    quote: "Two are better than one, for if either of them falls, one can help the other up.",
+    quoteCite: "Ecclesiastes 4:9-10",
+    request: "Request the honour of your presence at their wedding celebration",
+    weekday: "Saturday",
+    day: "12",
+    month: "June",
+    year: "2027",
+    time: "3:00 PM",
+    signOff: "With love",
+    closing: "Looking forward to celebrating with you",
   },
 
   /* ── 1. Cinematic cover ─────────────────────────────────────────────────── */

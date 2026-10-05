@@ -42,43 +42,45 @@ in one at a time.
 To add or remove wedding party members or registry items, edit the arrays in
 `wedding.ts`. The layout adapts to the count.
 
-### Envelope PNGs (`public/envelope/`)
+### Envelope (`public/envelope/`)
 
-The intro is built from four separate transparent PNG layers, stacked as:
+The intro is built from separate transparent layers, all cut from the client's
+closed-envelope artwork (612 × 407) so they line up exactly:
 
 ```
-z40  wax-seal.png          sits on the flap's point
-z30  envelope-flap.png     V-shaped, hinged on its top edge
-z20  envelope-body.png     static base, must be opaque where it covers the card
-z10  invitation-card.png   tucked behind the body, slides up and out
+z40  wax-seal.png           sits on the flap's point
+z35  envelope-flowers.png   top-left bouquet, lying on the envelope
+z30  envelope-flap.png      the V flap ("From the Sanzi"), hinged on its top edge
+z20  envelope-pocket.png    the envelope with the flap cut away (bottom bouquet, 2027)
+z15  card (code)            the invitation card, tucked inside
+z10  inside panel (CSS)     the envelope's inside, seen once the flap opens
 ```
 
-| File                  | Canvas            | Notes |
-| --------------------- | ----------------- | ----- |
-| `envelope-body.png`   | 1400 × 1000 (7:5) | Full envelope back with the pocket folds. It must be **opaque** over the card area. |
-| `envelope-flap.png`   | 1400 × 560 (5:2)  | Same width as the body. The top edge is the hinge and the point is at bottom-centre. |
-| `wax-seal.png`        | 400 × 400 (1:1)   | Seal centred on the canvas. It is placed on the flap's point. |
-| `invitation-card.png` | portrait, ~7:10   | Transparent card (deckled edges are fine). Shown whole, never cropped, with a shadow that follows its edges. It tucks into the envelope, then grows to fill the screen with a small margin. Export at least 1200 px wide so it stays sharp on phones. |
+`card-paper.png` is the card's deckle-edged paper (with its shadow) and
+`paper-grain.png` a small grain tile. Both are pre-rendered so nothing heavy is
+drawn live while the envelope animates.
 
-Until a PNG exists, a built-in SVG stand-in is drawn for that layer, so the
-intro always works. If the client's art uses different proportions, change the
-percentages in `src/components/envelope/EnvelopeIntro.tsx`: the flap height is
-`h-[56%]`, the seal sits at `top-[56%]` and is `w-[21%]` wide, and the
-envelope is `aspect-[7/5]`.
+The invitation card is laid out in code (`InvitationCardFace.tsx`): torn paper,
+twine bow and a dried-flower sprig. Its wording comes from `card` in
+`wedding.ts`. On phones it stretches to fill almost the whole screen.
 
-**Opening sequence** (`EnvelopeIntro.tsx`, `open()`):
+If the envelope artwork changes, re-cut the layers and update the `BODY`,
+`FLAP`, `SEAL` and `FLAP_OUTLINE` constants (artwork pixels) at the top of
+`src/components/envelope/EnvelopeIntro.tsx`.
 
-1. The seal lifts, scales to 1.18 and fades.
-2. A short pause (250 ms).
-3. The flap rotates `rotateX 0 → 180°` about its top edge inside a
-   `perspective: 1400px` container, so it swings toward the viewer. At 90° it
-   drops behind the card.
-4. The card slides up out of the envelope while the envelope sinks.
-5. The card expands to fill the screen. Scrolling then unlocks and the page
-   continues below it.
+**Opening sequence** (`EnvelopeIntro.tsx`, `open()`), with the steps overlapping
+so it flows (about 2.5 s in all):
 
+1. The seal lifts, scales to 1.15 and fades (0.45 s).
+2. 0.3 s in, the flap rotates `rotateX 0 → 180°` about its top edge inside a
+   `perspective: 1400px` container (0.8 s), swinging toward the viewer and
+   folding back point-up. Edge-on it drops behind the card.
+3. Before the flap has settled, the card slides up out of the pocket while the
+   envelope sinks (0.95 s).
+4. The card grows to fill the screen (0.85 s; almost edge to edge on phones).
+   Scrolling then unlocks and the page continues below it.
 When the guest's device asks for reduced motion, the same sequence plays at
-about a third of the duration.
+well under half the duration.
 
 ---
 

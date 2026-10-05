@@ -1,13 +1,14 @@
 # Envelope layers
 
-Drop the four transparent PNGs here with exactly these names:
+All cut from the client's closed-envelope artwork (612 × 407 px), so they line up:
 
-| File                  | What it is                                          | Canvas            |
-| --------------------- | --------------------------------------------------- | ----------------- |
-| `envelope-body.png`   | Envelope base (opaque where the card hides)         | 1400 × 1000 (7:5) |
-| `envelope-flap.png`   | V-shaped flap, point at bottom-centre               | 1400 × 560 (5:2)  |
-| `wax-seal.png`        | Wax seal, centred                                   | 400 × 400 (1:1)   |
-| `invitation-card.png` | Transparent invitation card, shown whole            | portrait ~7:10, ≥1200 px wide |
+| File                   | What it is |
+| ---------------------- | ---------- |
+| `envelope-pocket.png`  | The envelope with the flap cut away (bottom bouquet, 2027 ornament); the baked-in seal painted out. |
+| `envelope-flap.png`    | The V flap with "From the Sanzi", 407 × 202, hinge on its top edge. |
+| `envelope-flowers.png` | The top-left bouquet, lifted off the paper. |
+| `wax-seal.png`         | Transparent wax seal, square, centred. |
+| `card-paper.png`       | The invitation card's deckle-edged paper with its shadow. |
+| `paper-grain.png`      | Small tileable paper grain. |
 
-Until a file exists, the site draws a built-in stand-in for that layer.
-See the main README for alignment details.
+See the main README → "Envelope".
