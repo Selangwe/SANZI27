@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, MotionConfig } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import { EnvelopeIntro } from "./envelope/EnvelopeIntro";
 import { OpeningCover } from "./sections/OpeningCover";
@@ -31,7 +31,9 @@ export function InvitationExperience() {
   const handleOpened = useCallback(() => setOpened(true), []);
 
   return (
-    <>
+    // reducedMotion="user": transform animations become instant fades for guests
+    // who ask their device for less motion. Scroll-linked effects opt out separately.
+    <MotionConfig reducedMotion="user">
       <AnimatePresence>{!opened && <EnvelopeIntro key="intro" onComplete={handleOpened} />}</AnimatePresence>
 
       <main inert={!opened} aria-hidden={!opened} className="overflow-x-clip">
@@ -47,6 +49,6 @@ export function InvitationExperience() {
         <Faq />
         <Footer />
       </main>
-    </>
+    </MotionConfig>
   );
 }

@@ -1,13 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Jost, Pinyon_Script } from "next/font/google";
+import { Cormorant_Garamond, Instrument_Serif, Jost, Pinyon_Script } from "next/font/google";
 import { wedding } from "@/content/wedding";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  weight: ["300", "400", "500", "600"],
   style: ["normal", "italic"],
   variable: "--font-cormorant",
+  display: "swap",
+});
+
+/** Tall, condensed serif for the "With Our Families" title */
+const instrument = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-instrument",
   display: "swap",
 });
 
@@ -26,7 +34,7 @@ const jost = Jost({
 });
 
 const { partnerOne, partnerTwo } = wedding.couple;
-const title = `${partnerOne.firstName} & ${partnerTwo.firstName} — Wedding Invitation`;
+const title = `${partnerOne.firstName} & ${partnerTwo.firstName}: Wedding Invitation`;
 const description = `Join us on ${wedding.event.displayDate} at ${wedding.venue.name}.`;
 
 const siteUrl =
@@ -49,7 +57,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f7f2ea",
+  themeColor: "#f1e9de",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -59,7 +67,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${pinyon.variable} ${jost.variable} scroll-locked`}
+      className={`${cormorant.variable} ${instrument.variable} ${pinyon.variable} ${jost.variable} scroll-locked`}
     >
       <body>{children}</body>
     </html>

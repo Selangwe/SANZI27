@@ -4,7 +4,7 @@ import { motion, useAnimate, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { wedding } from "@/content/wedding";
 import { EnvelopeBodyArt, EnvelopeFlapArt, WaxSealArt } from "./fallbacks";
-import { InvitationCardFace } from "./InvitationCardFace";
+import { InvitationCardFace, cardRestingRect } from "./InvitationCardFace";
 import { LayerImage } from "./LayerImage";
 
 const LUXE = [0.22, 1, 0.36, 1] as const;
@@ -23,7 +23,8 @@ type Rect = { top: number; left: number; width: number; height: number };
  *
  * Sequence on tap: seal lifts + fades → pause → flap swings open in 3D
  * (rotateX about its top edge, inside a perspective container) → card slides
- * up → card expands to fill the screen → onComplete() unlocks scrolling.
+ * up → card grows to fill the screen (with a small margin) → onComplete()
+ * unlocks scrolling.
  */
 export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
   const reduceMotion = useReducedMotion();
@@ -153,11 +154,11 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
             className="absolute -bottom-6 left-[8%] right-[8%] h-8 rounded-[50%] bg-[#5d4c36]/20 blur-xl"
           />
 
-          {/* z10 — Invitation card, tucked inside */}
+          {/* z10 — Invitation card (portrait, ~1:1.42), tucked inside */}
           <div
             ref={cardRef}
             data-card
-            className="absolute left-[5%] right-[5%] top-[5%] bottom-[5%] z-10 overflow-hidden rounded-[3px] shadow-[0_8px_30px_-8px_rgba(60,45,30,0.35)]"
+            className="absolute bottom-[5%] left-[27%] right-[27%] top-[5%] z-10"
             style={{ opacity: phase === "expanding" ? 0 : 1 }}
           >
             <InvitationCardFace onSettled={onLayerSettled} />
@@ -209,7 +210,7 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
       <motion.p
         className="eyebrow relative mt-14 sm:mt-16"
         initial={{ opacity: 0 }}
-        animate={ready ? (phase === "idle" ? { opacity: [0.35, 1, 0.35] } : { opacity: 0 }) : undefined}
+        animate={ready ? (phase === "idle" ? { opacity: reduceMotion ? 0.8 : [0.35, 1, 0.35] } : { opacity: 0 }) : undefined}
         transition={
           phase === "idle" ? { duration: 2.4, repeat: Infinity, ease: "easeInOut", delay: 1.4 } : { duration: 0.3 }
         }
@@ -217,16 +218,12 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
         {tapHint}
       </motion.p>
 
-      {/* 5. The card, lifted out of the envelope, expanding to full screen */}
+      {/* 5. The card, lifted out of the envelope, growing to fill the screen */}
       {phase === "expanding" && (
         <motion.div
-          className="fixed z-[60] overflow-hidden shadow-[0_20px_60px_-10px_rgba(60,45,30,0.35)]"
-          initial={
-            expandFrom
-              ? { ...expandFrom, borderRadius: 3 }
-              : { top: 0, left: 0, width: viewport.w, height: viewport.h, opacity: 0 }
-          }
-          animate={{ top: 0, left: 0, width: viewport.w, height: viewport.h, borderRadius: 0, opacity: 1 }}
+          className="fixed z-[60]"
+          initial={expandFrom ?? { ...cardRestingRect(viewport.w, viewport.h), opacity: 0 }}
+          animate={{ ...cardRestingRect(viewport.w, viewport.h), opacity: 1 }}
           transition={{ duration: reduceMotion ? 0.4 : 1.15, ease: LUXE }}
           onAnimationComplete={onComplete}
         >

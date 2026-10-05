@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { wedding } from "@/content/wedding";
 import { ImageSlot } from "../ui/ImageSlot";
@@ -12,16 +12,17 @@ export function Story() {
   const { story } = wedding;
   const photoRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: photoRef, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
+  const reduce = useReducedMotion();
+  const y = useTransform(scrollYProgress, [0, 1], reduce ? ["0%", "0%"] : ["-6%", "6%"]);
 
   return (
     <Section id="story" className="paper">
-      <SectionHeading eyebrow={story.eyebrow} title={story.heading} />
+      <SectionHeading title={story.heading} />
 
       <div className="mt-14 grid items-center gap-14 md:grid-cols-[1fr_1.1fr] md:gap-20">
         <Reveal className="relative mx-auto w-full max-w-sm">
-          <div className="absolute -bottom-4 -right-4 h-full w-full border border-gold/40" aria-hidden="true" />
-          <div ref={photoRef} className="relative aspect-[4/5] overflow-hidden">
+          <div className="absolute -bottom-4 -right-4 h-full w-full rounded-2xl border border-gold/35" aria-hidden="true" />
+          <div ref={photoRef} className="relative aspect-[4/5] overflow-hidden rounded-2xl">
             <motion.div className="absolute -inset-y-[8%] inset-x-0" style={{ y }}>
               <ImageSlot image={story.image} sizes="(max-width: 768px) 90vw, 400px" />
             </motion.div>

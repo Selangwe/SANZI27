@@ -22,7 +22,7 @@ export function InvitationText() {
 
   return (
     <Section id="invitation" className="bg-ivory">
-      <SectionHeading eyebrow={invitation.eyebrow} title={invitation.heading} />
+      <SectionHeading title={invitation.heading} />
       <div className="mx-auto mt-12 max-w-xl space-y-6 text-center">
         {invitation.body.map((p, i) => (
           <Reveal key={i} delay={i * 0.12}>

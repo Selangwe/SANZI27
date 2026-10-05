@@ -40,36 +40,36 @@ export function Gifts() {
   };
 
   return (
-    <Section id="gifts" className="bg-ivory">
-      <SectionHeading eyebrow={gifts.eyebrow} title={gifts.heading} />
+    <Section id="gifts" className="paper">
+      <SectionHeading title={gifts.heading} />
       <Reveal className="mx-auto mt-6 max-w-lg text-center">
         <p className="font-display text-lg italic leading-relaxed text-stone">{gifts.intro}</p>
       </Reveal>
 
-      <div className="mt-14 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-4 md:gap-6">
+      <div className="mt-14 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 md:gap-6">
         {gifts.registry.map((item, i) => {
           const mine = myClaims.includes(item.id);
           const claimed = item.claimed || mine;
           return (
-            <Reveal key={item.id} delay={(i % 4) * 0.08} className="flex flex-col">
+            <Reveal key={item.id} delay={(i % 4) * 0.08} className="card flex flex-col overflow-hidden">
               <div className="relative aspect-square overflow-hidden bg-linen">
                 <ImageSlot image={item.image} sizes="(max-width: 768px) 45vw, 240px" className={claimed ? "opacity-50 grayscale" : ""} />
-                {claimed && (
-                  <span className="absolute left-3 top-3 bg-ivory/90 px-2.5 py-1 text-[0.55rem] uppercase tracking-[0.25em] text-stone">
-                    {mine ? "Claimed by you" : "Claimed"}
-                  </span>
-                )}
               </div>
-              <h3 className="mt-4 font-display text-lg leading-snug text-ink sm:text-xl">{item.name}</h3>
-              <p className="mt-1 text-sm text-stone">{money.format(item.price)}</p>
-              <button
-                type="button"
-                disabled={claimed}
-                onClick={() => setClaiming(item)}
-                className="btn btn-outline mt-4 min-h-10 px-4 text-[0.6rem]"
-              >
-                {claimed ? "Claimed" : "Claim gift"}
-              </button>
+              <div className="flex flex-1 flex-col p-3 sm:p-4">
+                <h3 className="font-sans text-[0.85rem] font-medium leading-snug text-ink">{item.name}</h3>
+                <p className="mt-1 font-display text-xl font-semibold text-gold">{money.format(item.price)}</p>
+                <p className="mb-4 mt-1 text-xs text-stone">
+                  {mine ? "You claimed this" : claimed ? "Already claimed" : "Available"}
+                </p>
+                <button
+                  type="button"
+                  disabled={claimed}
+                  onClick={() => setClaiming(item)}
+                  className="btn btn-solid mt-auto min-h-9 px-3 text-[0.6rem]"
+                >
+                  {claimed ? "Claimed" : "Claim"}
+                </button>
+              </div>
             </Reveal>
           );
         })}
@@ -105,9 +105,8 @@ function HoneymoonFund() {
       : null;
 
   return (
-    <Reveal className="mx-auto mt-20 max-w-2xl border border-sand bg-cream px-6 py-12 text-center sm:px-12">
-      <p className="text-[0.62rem] uppercase tracking-[0.32em] text-gold">Honeymoon</p>
-      <h3 className="mt-3 font-display text-4xl font-light text-ink">{honeymoon.heading}</h3>
+    <Reveal className="card mx-auto mt-16 max-w-2xl px-6 py-10 text-center sm:px-12">
+      <h3 className="font-display text-4xl font-semibold text-ink">{honeymoon.heading}</h3>
       <p className="mx-auto mt-4 max-w-md leading-relaxed text-ink/70">{honeymoon.description}</p>
 
       <div className="mt-10">
@@ -115,9 +114,9 @@ function HoneymoonFund() {
           <span className="font-display text-2xl text-ink">{money.format(honeymoon.raised)}</span>
           <span className="text-stone">of {money.format(honeymoon.goal)}</span>
         </div>
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-sand/70" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
+        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-sand/70" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-gold-soft to-gold"
+            className="h-full rounded-full bg-gradient-to-r from-gold-soft to-cocoa"
             initial={{ width: 0 }}
             whileInView={{ width: `${pct}%` }}
             viewport={{ once: true }}
@@ -127,7 +126,7 @@ function HoneymoonFund() {
         <p className="mt-2 text-right text-[0.6rem] uppercase tracking-[0.25em] text-taupe">{pct}% of our goal</p>
       </div>
 
-      <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="mt-10 flex flex-wrap justify-center gap-2.5">
         {honeymoon.presets.map((p) => {
           const active = !custom && amount === p;
           return (
@@ -139,8 +138,8 @@ function HoneymoonFund() {
                 setCustom("");
               }}
               aria-pressed={active}
-              className={`min-h-12 border font-display text-lg transition-colors ${
-                active ? "border-ink bg-ink text-ivory" : "border-sand bg-ivory text-ink hover:border-stone"
+              className={`min-h-11 min-w-20 rounded-full border px-4 text-sm font-medium transition-colors ${
+                active ? "border-cocoa bg-cocoa text-ivory" : "border-sand bg-cream text-ink hover:border-stone"
               }`}
             >
               {money.format(p)}
@@ -212,7 +211,7 @@ function ClaimDialog({ item, onClose, onClaimed }: { item: RegistryItem; onClose
         role="dialog"
         aria-modal="true"
         aria-labelledby="claim-title"
-        className="w-full max-w-sm bg-ivory px-6 pb-8 pt-10 text-center"
+        className="w-full max-w-sm rounded-2xl bg-ivory px-6 pb-8 pt-10 text-center"
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 40, opacity: 0 }}

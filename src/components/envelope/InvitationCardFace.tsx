@@ -5,24 +5,38 @@ import { LayerImage } from "./LayerImage";
 
 /**
  * The invitation card. Shows /public/envelope/invitation-card.png when it
- * exists; otherwise a typeset card. Typography uses container units so the
- * same card reads well tucked in the envelope and at full screen.
+ * exists; otherwise a typeset card. The PNG is a transparent, deckle-edged
+ * card, so it is shown whole (contained) with a shadow that follows its edges,
+ * over whatever paper sits behind it. Typography of the typeset fallback uses
+ * container units so it reads well both tucked in the envelope and full size.
  */
 export function InvitationCardFace({ onSettled, priority = true }: { onSettled?: () => void; priority?: boolean }) {
   return (
-    <div className="absolute inset-0 overflow-hidden bg-ivory" style={{ containerType: "size" }}>
+    <div className="absolute inset-0" style={{ containerType: "size" }}>
       <LayerImage
         src={wedding.envelope.images.card}
         alt="Wedding invitation"
-        sizes="100vw"
-        fit="cover"
+        sizes="(max-width: 640px) 100vw, 640px"
+        fit="contain"
         priority={priority}
         onSettled={onSettled}
+        imgClassName="drop-shadow-[0_14px_22px_rgba(60,40,25,0.28)]"
         fallback={<TypesetCard />}
       />
     </div>
   );
 }
+
+/**
+ * Where the card sits once it has left the envelope: centred on screen with a
+ * small margin. Shared by the envelope's expand step and the pinned card behind
+ * the cover so the hand-off between them is seamless.
+ */
+export const CARD_MARGIN_VMIN = 7;
+export const cardRestingRect = (w: number, h: number) => {
+  const m = (Math.min(w, h) * CARD_MARGIN_VMIN) / 100;
+  return { top: m, left: m, width: w - m * 2, height: h - m * 2 };
+};
 
 function TypesetCard() {
   const { partnerOne, partnerTwo, monogram } = wedding.couple;

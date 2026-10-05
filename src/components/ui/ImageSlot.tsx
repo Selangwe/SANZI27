@@ -1,5 +1,6 @@
 "use client";
 
+import { ImageSquare } from "@phosphor-icons/react";
 import Image from "next/image";
 import { useState } from "react";
 import type { ImageAsset } from "@/content/wedding";
@@ -81,11 +82,7 @@ function Placeholder({
     >
       {!pending && (
         <>
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="opacity-60">
-            <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.2" />
-            <circle cx="9" cy="10" r="1.6" stroke="currentColor" strokeWidth="1.2" />
-            <path d="M4 17l5-4.5 4 3 3-2.5 4 4" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
-          </svg>
+          <ImageSquare size={28} weight="light" className="opacity-60" aria-hidden="true" />
           <span className="text-[0.62rem] uppercase tracking-[0.22em]">{image.label}</span>
           <code className="max-w-full break-all rounded bg-black/5 px-2 py-0.5 text-[0.6rem] opacity-70">
             public{image.src}

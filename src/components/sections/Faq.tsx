@@ -1,5 +1,6 @@
 "use client";
 
+import { CaretDown } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { wedding } from "@/content/wedding";
@@ -13,7 +14,7 @@ export function Faq() {
 
   return (
     <Section id="faq" className="paper">
-      <SectionHeading eyebrow={faq.eyebrow} title={faq.heading} />
+      <SectionHeading title={faq.heading} />
 
       <Reveal className="mx-auto mt-14 max-w-2xl border-t border-sand">
         {faq.items.map((item, i) => {
@@ -27,17 +28,19 @@ export function Faq() {
                   aria-expanded={isOpen}
                   aria-controls={`faq-a-${i}`}
                   onClick={() => setOpen(isOpen ? null : i)}
-                  className="flex w-full items-center justify-between gap-6 py-6 text-left"
+                  className="flex w-full items-center gap-4 py-5 text-left"
                 >
-                  <span className="font-display text-xl text-ink sm:text-2xl">{item.q}</span>
+                  <span className="w-3 shrink-0 font-display text-sm font-semibold text-gold" aria-hidden="true">
+                    Q
+                  </span>
+                  <span className="flex-1 text-[0.95rem] font-normal text-ink">{item.q}</span>
                   <motion.span
-                    className="relative h-4 w-4 shrink-0 text-gold"
-                    animate={{ rotate: isOpen ? 45 : 0 }}
+                    className="shrink-0 text-taupe"
+                    animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                     aria-hidden="true"
                   >
-                    <span className="absolute left-0 top-1/2 h-px w-4 bg-current" />
-                    <span className="absolute left-1/2 top-0 h-4 w-px bg-current" />
+                    <CaretDown size={16} weight="light" />
                   </motion.span>
                 </button>
               </h3>
@@ -53,7 +56,12 @@ export function Faq() {
                     transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                     className="overflow-hidden"
                   >
-                    <p className="pb-6 pr-10 leading-relaxed text-ink/70">{item.a}</p>
+                    <div className="flex gap-4 pb-6 pr-8">
+                      <span className="w-3 shrink-0 font-display text-sm font-semibold text-taupe" aria-hidden="true">
+                        A
+                      </span>
+                      <p className="text-[0.95rem] leading-relaxed text-ink/70">{item.a}</p>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>

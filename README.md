@@ -36,7 +36,7 @@ in one at a time.
 | `cover.jpg`                              | 1 · Cinematic cover          | portrait, ≥1600px tall |
 | `families.jpg`                           | 2 · With Our Families (arch) | 3:4              |
 | `story.jpg`                              | 4 · Their Story              | 4:5              |
-| `party/member-1.jpg` … `member-6.jpg`    | 6 · Wedding Party            | 3:4              |
+| `party/member-1.jpg` … `member-6.jpg`    | 6 · Wedding Party (circle)   | 1:1, face centred |
 | `registry/item-1.jpg` … `item-4.jpg`     | 9 · Gifts registry           | 1:1              |
 
 To add or remove wedding party members or registry items, edit the arrays in
@@ -58,7 +58,7 @@ z10  invitation-card.png   tucked behind the body, slides up and out
 | `envelope-body.png`   | 1400 × 1000 (7:5) | Full envelope back with the pocket folds. It must be **opaque** over the card area. |
 | `envelope-flap.png`   | 1400 × 560 (5:2)  | Same width as the body. The top edge is the hinge and the point is at bottom-centre. |
 | `wax-seal.png`        | 400 × 400 (1:1)   | Seal centred on the canvas. It is placed on the flap's point. |
-| `invitation-card.png` | 1080 × 1920       | Shown inside the envelope (centre-cropped), then expands to full screen. Portrait works best. |
+| `invitation-card.png` | portrait, ~7:10   | Transparent card (deckled edges are fine). Shown whole, never cropped, with a shadow that follows its edges. It tucks into the envelope, then grows to fill the screen with a small margin. Export at least 1200 px wide so it stays sharp on phones. |
 
 Until a PNG exists, a built-in SVG stand-in is drawn for that layer, so the
 intro always works. If the client's art uses different proportions, change the

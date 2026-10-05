@@ -1,5 +1,6 @@
 "use client";
 
+import { CalendarPlus } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { wedding } from "@/content/wedding";
@@ -19,7 +20,7 @@ export function Countdown() {
 
   return (
     <Section id="countdown" className="bg-ivory">
-      <SectionHeading eyebrow={countdown.eyebrow} title={countdown.heading} />
+      <SectionHeading title={countdown.heading} />
 
       <div className="mt-14 grid items-center gap-14 md:grid-cols-2 md:gap-20">
         <Reveal>
@@ -30,8 +31,8 @@ export function Countdown() {
           <Timer target={event.start} />
           <p className="mt-8 font-display text-xl italic text-stone">{event.displayDate}</p>
           <div className="mt-8 flex flex-col items-center gap-4">
-            <a href="/calendar.ics" className="btn btn-solid">
-              <CalendarIcon />
+            <a href="/calendar.ics" className="btn btn-outline bg-ivory">
+              <CalendarPlus size={16} weight="light" />
               {countdown.addToCalendarLabel}
             </a>
             <a
@@ -58,11 +59,10 @@ function MonthCalendar({ date }: { date: string }) {
   }, [year, month]);
 
   return (
-    <div className="mx-auto w-full max-w-sm border border-sand bg-cream/60 px-6 py-8">
-      <div className="text-center">
-        <p className="font-display text-3xl font-light text-ink">{MONTHS[month - 1]}</p>
-        <p className="mt-1 text-[0.65rem] uppercase tracking-[0.35em] text-taupe">{year}</p>
-      </div>
+    <div className="card mx-auto w-full max-w-sm px-6 py-8">
+      <p className="text-center font-display text-3xl font-semibold text-ink">
+        {MONTHS[month - 1]} {year}
+      </p>
       <div className="mt-6 grid grid-cols-7 gap-y-2 text-center">
         {WEEKDAYS.map((w, i) => (
           <span key={i} className="pb-2 text-[0.6rem] uppercase tracking-[0.2em] text-taupe">
@@ -73,27 +73,15 @@ function MonthCalendar({ date }: { date: string }) {
           <span key={i} className="relative flex aspect-square items-center justify-center text-sm">
             {d === day ? (
               <>
-                <motion.svg
-                  viewBox="0 0 40 40"
-                  className="absolute inset-0 m-auto h-[115%] w-[115%] text-gold"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
+                <motion.span
                   aria-hidden="true"
-                >
-                  <motion.path
-                    d="M20 35s-13-7.6-13-17A7 7 0 0 1 20 13a7 7 0 0 1 13 5c0 9.4-13 17-13 17z"
-                    fill="currentColor"
-                    fillOpacity={0.12}
-                    stroke="currentColor"
-                    strokeWidth={1}
-                    initial={{ pathLength: 0 }}
-                    whileInView={{ pathLength: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.6, ease: "easeInOut", delay: 0.3 }}
-                  />
-                </motion.svg>
-                <span className="relative font-medium text-ink">{d}</span>
+                  className="absolute inset-[8%] rounded-full bg-gold/15 ring-1 ring-gold/40"
+                  initial={{ scale: 0.4, opacity: 0 }}
+                  whileInView={{ scale: 1, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ type: "spring", stiffness: 140, damping: 16, delay: 0.3 }}
+                />
+                <span className="relative font-semibold text-gold">{d}</span>
               </>
             ) : (
               <span className={d ? "text-ink/60" : ""}>{d}</span>
@@ -136,7 +124,7 @@ function Timer({ target }: { target: string }) {
         const value = parts ? parts[label] : null;
         return (
           <div key={label} className="flex flex-col items-center px-1">
-            <span className="relative h-12 overflow-hidden font-display text-[2.6rem] font-light leading-[3rem] tabular-nums text-ink sm:h-14 sm:text-5xl sm:leading-[3.5rem]">
+            <span className="relative h-12 overflow-hidden font-display text-[2.6rem] font-medium leading-[3rem] tabular-nums text-gold sm:h-14 sm:text-5xl sm:leading-[3.5rem]">
               <AnimatePresence mode="popLayout" initial={false}>
                 <motion.span
                   key={value ?? "x"}
@@ -146,7 +134,7 @@ function Timer({ target }: { target: string }) {
                   exit={{ y: "60%", opacity: 0 }}
                   transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  {value === null ? "—" : String(value).padStart(2, "0")}
+                  {String(value ?? 0).padStart(2, "0")}
                 </motion.span>
               </AnimatePresence>
             </span>
@@ -155,14 +143,5 @@ function Timer({ target }: { target: string }) {
         );
       })}
     </div>
-  );
-}
-
-function CalendarIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="3.5" y="5" width="17" height="15.5" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
   );
 }

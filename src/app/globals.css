@@ -1,20 +1,26 @@
 @import "tailwindcss";
 
 /* ── Design tokens ──────────────────────────────────────────────────────────
-   Warm, editorial palette. Change these to re-theme the whole site. */
+   Warm desert-linen palette with terracotta accents. Change these to
+   re-theme the whole site. Text tokens (taupe, stone, gold) are tuned to
+   pass WCAG AA 4.5:1 on cream and linen, so small labels stay readable. ("gold" is the accent colour used for eyebrows,
+   ornaments and highlights; "cocoa" fills the solid buttons.) */
 @theme {
-  --color-cream: #f7f2ea;
-  --color-ivory: #fbf8f3;
-  --color-linen: #efe7da;
-  --color-sand: #e3d7c3;
-  --color-taupe: #a8977f;
-  --color-stone: #7a6d5c;
-  --color-ink: #2f2a24;
-  --color-gold: #b08d57;
-  --color-gold-soft: #cdb48a;
+  --color-cream: #f1e9de;
+  --color-ivory: #f8f3ec;
+  --color-linen: #e9dfd2;
+  --color-sand: #dccfbe;
+  --color-taupe: #716050;
+  --color-stone: #665649;
+  --color-ink: #3a2b22;
+  --color-gold: #93512f;
+  --color-gold-soft: #d0a58e;
+  --color-cocoa: #7a4b37;
+  --color-backdrop: #b9ad9d;
   --color-wax: #7e2a2a;
 
   --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-tall: var(--font-instrument), "Instrument Serif", Georgia, serif;
   --font-script: var(--font-pinyon), "Pinyon Script", cursive;
   --font-sans: var(--font-jost), "Jost", system-ui, sans-serif;
 
@@ -53,11 +59,21 @@
   /* Small spaced capitals used for eyebrows and labels */
   .eyebrow {
     font-family: var(--font-sans);
-    font-size: 0.68rem;
-    font-weight: 400;
-    letter-spacing: 0.32em;
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.26em;
     text-transform: uppercase;
-    color: var(--color-stone);
+    color: var(--color-gold);
+  }
+
+  /* Radius rule: surfaces (cards, dialogs, photos) 1rem; controls (buttons,
+     inputs, choice tiles) 0.5rem; chips and counters full pill. */
+  /* Rounded paper card (registry items, venue, honeymoon fund…) */
+  .card {
+    border: 1px solid color-mix(in srgb, var(--color-sand) 75%, transparent);
+    border-radius: 1rem;
+    background: var(--color-ivory);
+    box-shadow: 0 10px 30px -18px rgba(74, 52, 36, 0.35);
   }
 
   /* Subtle paper grain, layered on cream backgrounds */
@@ -77,11 +93,11 @@
     gap: 0.5rem;
     min-height: 3rem;
     padding: 0 1.75rem;
-    border-radius: 999px;
+    border-radius: 0.5rem;
     font-family: var(--font-sans);
-    font-size: 0.72rem;
-    font-weight: 400;
-    letter-spacing: 0.24em;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     transition:
       background-color 0.3s var(--ease-luxe),
@@ -93,11 +109,12 @@
     transform: scale(0.98);
   }
   .btn-solid {
-    background: var(--color-ink);
+    background: var(--color-cocoa);
     color: var(--color-ivory);
+    box-shadow: 0 6px 16px -8px rgba(90, 52, 34, 0.6);
   }
   .btn-solid:hover {
-    background: #4a4238;
+    background: #66392a;
   }
   .btn-outline {
     border: 1px solid color-mix(in srgb, var(--color-ink) 35%, transparent);
@@ -117,7 +134,7 @@
     min-height: 3rem;
     padding: 0.75rem 1rem;
     border: 1px solid var(--color-sand);
-    border-radius: 0.75rem;
+    border-radius: 0.5rem;
     background: var(--color-ivory);
     font-size: 1rem; /* ≥16px stops iOS zooming on focus */
     color: var(--color-ink);

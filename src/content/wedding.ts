@@ -52,8 +52,8 @@ export const wedding = {
     displayDateFormal: "Saturday, the twelfth of June",
     displayYearFormal: "Two thousand and twenty-seven",
     displayTime: "3:00 in the afternoon",
-    shortDate: "06 · 12 · 2027",
-    calendarTitle: "Eleanor & James — Wedding",
+    shortDate: "12 June 2027",
+    calendarTitle: "Eleanor & James: Wedding",
   },
 
   /* ── Venue ──────────────────────────────────────────────────────────────── */
@@ -93,25 +93,24 @@ export const wedding = {
     image: {
       src: "/images/cover.jpg",
       alt: "Eleanor and James",
-      label: "Cover photo — full-bleed couple shot",
+      label: "Cover photo, full-bleed couple shot",
     } satisfies ImageAsset,
     tagline: "are getting married",
   },
 
   /* ── 2. With our families ───────────────────────────────────────────────── */
   families: {
-    eyebrow: "With our families",
+    title: "With our families",
     intro: "Together with their families",
     image: {
       src: "/images/families.jpg",
       alt: "Eleanor and James together",
-      label: "Families section — couple photo",
+      label: "Families section couple photo",
     } satisfies ImageAsset,
   },
 
   /* ── 3. Invitation text ─────────────────────────────────────────────────── */
   invitation: {
-    eyebrow: "The invitation",
     heading: "Join us",
     body: [
       "With full hearts and the blessing of our families, we joyfully invite you to celebrate the beginning of our forever.",
@@ -122,7 +121,6 @@ export const wedding = {
 
   /* ── 4. Their story ─────────────────────────────────────────────────────── */
   story: {
-    eyebrow: "Our story",
     heading: "How we met",
     image: {
       src: "/images/story.jpg",
@@ -130,7 +128,7 @@ export const wedding = {
       label: "Their Story photo",
     } satisfies ImageAsset,
     paragraphs: [
-      "It started with a borrowed umbrella on a rainy Tuesday in Cape Town — James insisted, Eleanor refused, and they ended up sharing it for six city blocks and two cups of coffee.",
+      "It started with a borrowed umbrella on a rainy Tuesday in Cape Town. James insisted, Eleanor refused, and they ended up sharing it for six city blocks and two cups of coffee.",
       "Weekend markets became long road trips; long road trips became a shared bookshelf, a slightly overwatered fern, and a dog named Biscuit.",
       "On a quiet morning on the beach where they spent their first holiday, James finally asked the question. Eleanor said yes before he could finish it.",
     ],
@@ -143,14 +141,12 @@ export const wedding = {
 
   /* ── 5. Countdown ───────────────────────────────────────────────────────── */
   countdown: {
-    eyebrow: "Save the date",
-    heading: "Counting down",
+    heading: "Save the date",
     addToCalendarLabel: "Add to Calendar",
   },
 
   /* ── 6. Wedding party ───────────────────────────────────────────────────── */
   weddingParty: {
-    eyebrow: "The wedding party",
     heading: "Standing beside us",
     members: [
       {
@@ -168,7 +164,7 @@ export const wedding = {
       {
         name: "Clara Whitmore",
         role: "Bridesmaid",
-        bio: "Eleanor's younger sister — the family's resident baker and dance-floor starter.",
+        bio: "Eleanor's younger sister, the family's resident baker and dance-floor starter.",
         image: { src: "/images/party/member-3.jpg", alt: "Clara Whitmore", label: "Party member 3 photo" },
       },
       {
@@ -207,15 +203,13 @@ export const wedding = {
 
   /* ── 8. Venue ───────────────────────────────────────────────────────────── */
   venueSection: {
-    eyebrow: "The venue",
     heading: "Where to find us",
     mapsLabel: "Open in Maps",
   },
 
   /* ── 9. Gifts ───────────────────────────────────────────────────────────── */
   gifts: {
-    eyebrow: "Gifts",
-    heading: "With gratitude",
+    heading: "Gifts for our next chapter",
     intro:
       "Your love and presence are more than enough. For those who have asked, we've put together a small registry and a fund for our honeymoon.",
     /** Prices are shown as e.g. "R2,400" */
@@ -265,7 +259,7 @@ export const wedding = {
     }[],
     honeymoon: {
       heading: "Honeymoon Fund",
-      description: "Help us toast to forever on the Amalfi Coast — a sunset dinner, a boat day, a few too many gelatos.",
+      description: "Help us toast to forever on the Amalfi Coast: a sunset dinner, a boat day, a few too many gelatos.",
       goal: 60000,
       raised: 23500,
       presets: [250, 500, 1000, 2500],
@@ -277,7 +271,6 @@ export const wedding = {
 
   /* ── 10. FAQ ────────────────────────────────────────────────────────────── */
   faq: {
-    eyebrow: "Good to know",
     heading: "Questions & answers",
     items: [
       {
@@ -290,7 +283,7 @@ export const wedding = {
       },
       {
         q: "What will the weather be like?",
-        a: "June evenings in the Winelands can be cool — around 10–16°C. The ceremony is outdoors, so bring a wrap or jacket.",
+        a: "June evenings in the Winelands can be cool, around 10 to 16°C. The ceremony is outdoors, so bring a wrap or jacket.",
       },
       {
         q: "What footwear should I wear?",
@@ -298,7 +291,7 @@ export const wedding = {
       },
       {
         q: "Is there parking?",
-        a: "Yes — complimentary parking is available on site. We also recommend using the rideshare voucher in the Venue section.",
+        a: "Yes, complimentary parking is available on site. We also recommend using the rideshare voucher in the Venue section.",
       },
       {
         q: "Can you accommodate dietary needs?",

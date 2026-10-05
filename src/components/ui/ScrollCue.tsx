@@ -1,26 +1,27 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { CaretDown } from "@phosphor-icons/react";
+import { motion, useReducedMotion } from "framer-motion";
 
-export function ScrollCue({ visible = true, light = false }: { visible?: boolean; light?: boolean }) {
+/**
+ * A single quiet caret under the full-screen invitation card. After the
+ * envelope opens the card fills the screen and looks "finished", so guests
+ * need one hint that the page continues. No label; still under reduced motion.
+ */
+export function ScrollCue({ visible = true }: { visible?: boolean }) {
+  const reduce = useReducedMotion();
   return (
     <motion.div
       aria-hidden="true"
-      className={`pointer-events-none absolute bottom-[max(2rem,env(safe-area-inset-bottom))] left-1/2 flex -translate-x-1/2 flex-col items-center gap-3 ${
-        light ? "text-ivory/85" : "text-stone"
-      }`}
+      className="pointer-events-none absolute bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 text-stone"
       initial={{ opacity: 0 }}
-      animate={{ opacity: visible ? 1 : 0 }}
-      transition={{ duration: 1, delay: visible ? 0.6 : 0 }}
+      animate={{ opacity: visible ? 0.8 : 0, y: visible && !reduce ? [0, 5, 0] : 0 }}
+      transition={{
+        opacity: { duration: 1, delay: visible ? 0.8 : 0 },
+        y: { duration: 2.2, repeat: Infinity, ease: "easeInOut" },
+      }}
     >
-      <span className="text-[0.6rem] uppercase tracking-[0.4em]">Scroll</span>
-      <span className={`relative h-12 w-px overflow-hidden ${light ? "bg-ivory/25" : "bg-stone/25"}`}>
-        <motion.span
-          className={`absolute left-0 top-0 h-1/2 w-px ${light ? "bg-ivory" : "bg-stone"}`}
-          animate={{ y: ["-100%", "200%"] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: [0.65, 0, 0.35, 1] }}
-        />
-      </span>
+      <CaretDown size={22} weight="light" />
     </motion.div>
   );
 }

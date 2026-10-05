@@ -1,5 +1,6 @@
 "use client";
 
+import { Check, X } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { wedding } from "@/content/wedding";
@@ -69,7 +70,7 @@ export function Rsvp() {
       <Reveal delay={0.1} className="mx-auto mt-12 max-w-md">
         <AnimatePresence mode="wait">
           {saved ? (
-            <motion.div key="done" {...fade} className="border border-sand bg-ivory px-6 py-12 text-center">
+            <motion.div key="done" {...fade} className="card px-6 py-12 text-center">
               <p className="font-script text-5xl text-ink">Thank you{saved.name ? `, ${saved.name.split(" ")[0]}` : ""}</p>
               <p className="mt-4 font-display text-lg italic text-stone">
                 {saved.choice === "accept" ? rsvp.thankYouAccept : rsvp.thankYouDecline}
@@ -88,10 +89,10 @@ export function Rsvp() {
           ) : (
             <motion.div key="form" {...fade}>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <ChoiceButton active={choice === "accept"} onClick={() => setChoice("accept")}>
+                <ChoiceButton icon="check" active={choice === "accept"} onClick={() => setChoice("accept")}>
                   {rsvp.acceptLabel}
                 </ChoiceButton>
-                <ChoiceButton active={choice === "decline"} onClick={() => setChoice("decline")}>
+                <ChoiceButton icon="cross" active={choice === "decline"} onClick={() => setChoice("decline")}>
                   {rsvp.declineLabel}
                 </ChoiceButton>
               </div>
@@ -149,16 +150,33 @@ export function Rsvp() {
   );
 }
 
-function ChoiceButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function ChoiceButton({
+  icon,
+  active,
+  onClick,
+  children,
+}: {
+  icon: "check" | "cross";
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`min-h-16 border px-4 font-display text-xl italic transition-colors duration-300 ${
-        active ? "border-ink bg-ink text-ivory" : "border-sand bg-ivory text-ink hover:border-stone"
+      className={`flex min-h-16 items-center justify-center gap-3 rounded-lg border px-4 text-[0.68rem] font-medium uppercase tracking-[0.2em] transition-colors duration-300 ${
+        active
+          ? "border-cocoa bg-cocoa text-ivory shadow-[0_8px_20px_-10px_rgba(90,52,34,0.7)]"
+          : "border-sand bg-ivory text-ink hover:border-stone"
       }`}
     >
+      {icon === "check" ? (
+        <Check size={16} weight="light" className={active ? "" : "text-gold"} />
+      ) : (
+        <X size={16} weight="light" className={active ? "" : "text-gold"} />
+      )}
       {children}
     </button>
   );

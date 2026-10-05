@@ -1,5 +1,6 @@
 "use client";
 
+import { Check, Copy } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 
@@ -45,7 +46,10 @@ export function CopyButton({ text, label = "Copy" }: { text: string; label?: str
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.2 }}
         >
-          {copied ? "Copied ✓" : label}
+          <span className="inline-flex items-center gap-2">
+            {copied ? <Check size={14} weight="light" /> : <Copy size={14} weight="light" />}
+            {copied ? "Copied" : label}
+          </span>
         </motion.span>
       </AnimatePresence>
     </button>
