@@ -249,11 +249,11 @@ export const wedding = {
               {
                 id: "traditional",
                 name: "Traditional Wedding",
-                venue: "Urban Council Hall, opposite Finance",
+                venue: "Bafoussam Urban Council Hall, opposite Finance",
                 time: "6:30 PM",
                 start: "2027-02-16T18:30:00+01:00",
                 end: "2027-02-16T23:59:00+01:00",
-                mapsQuery: "Urban Council Hall, Bafoussam, Cameroon",
+                mapsQuery: "Bafoussam Urban Council Hall, Bafoussam, Cameroon",
                 colours: "Toghu and Ndup (Bamenda and Bangwa)",
                 swatches: [
                   { name: "Toghu", hex: "#1b1b1b", accent: ["#c8102e", "#f2c200", "#1f7a3a"] },
