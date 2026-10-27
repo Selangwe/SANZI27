@@ -1,59 +1,70 @@
 import { wedding } from "@/content/wedding";
 
-/** 2027-06-12T15:00:00+02:00 → 20270612T130000Z */
+/** 2027-02-16T13:30:00+01:00 → 20270216T123000Z */
 function toUtcStamp(iso: string) {
   return new Date(iso).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+}
+
+/** 2027-02-20 → 20270220 (and the following day, for an all-day entry's end) */
+function toDateStamp(date: string, addDays = 0) {
+  const d = new Date(`${date}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + addDays);
+  return d.toISOString().slice(0, 10).replace(/-/g, "");
 }
 
 function escapeIcs(text: string) {
   return text.replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\;");
 }
 
-function eventDetails() {
-  const { event, venue } = wedding;
-  return {
-    title: event.calendarTitle,
-    location: [venue.name, ...venue.addressLines].join(", "),
-    description: `We can't wait to celebrate with you! Directions: ${venue.mapsUrl}`,
-    start: toUtcStamp(event.start),
-    end: toUtcStamp(event.end),
-  };
-}
+const mapsUrl = (query: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 
+/**
+ * Every celebration as a calendar entry. Events with a start time are timed;
+ * the rest (times still to be confirmed) are all-day entries on their date.
+ */
 export function buildIcs() {
-  const e = eventDetails();
-  return [
+  const { couple, celebrations } = wedding;
+  const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Wedding Invitation//EN",
+    "PRODID:-//SANZI27 Wedding//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
-    "BEGIN:VEVENT",
-    `UID:wedding-${e.start}@invitation`,
-    `DTSTAMP:${toUtcStamp(new Date().toISOString())}`,
-    `DTSTART:${e.start}`,
-    `DTEND:${e.end}`,
-    `SUMMARY:${escapeIcs(e.title)}`,
-    `LOCATION:${escapeIcs(e.location)}`,
-    `DESCRIPTION:${escapeIcs(e.description)}`,
-    "BEGIN:VALARM",
-    "TRIGGER:-P1D",
-    "ACTION:DISPLAY",
-    `DESCRIPTION:${escapeIcs(e.title)} is tomorrow`,
-    "END:VALARM",
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ].join("\r\n");
+    `X-WR-CALNAME:${escapeIcs(wedding.event.calendarTitle)}`,
+  ];
+  const stamp = toUtcStamp(new Date().toISOString());
+
+  for (const { city, days } of celebrations.cities) {
+    for (const day of days) {
+      for (const e of day.events) {
+        const title = `${couple.weddingName}: ${e.name}`;
+        const when = e.start
+          ? [`DTSTART:${toUtcStamp(e.start)}`, `DTEND:${toUtcStamp(e.end || e.start)}`]
+          : [`DTSTART;VALUE=DATE:${toDateStamp(day.date)}`, `DTEND;VALUE=DATE:${toDateStamp(day.date, 1)}`];
+        const details = [
+          `Dress code: ${e.dressCode}`,
+          `Colours: ${e.colours}`,
+          e.start ? "" : "Time to be confirmed.",
+          `Directions: ${mapsUrl(e.mapsQuery)}`,
+        ]
+          .filter(Boolean)
+          .join("\n");
+        lines.push(
+          "BEGIN:VEVENT",
+          `UID:${couple.weddingName.toLowerCase()}-${e.id}@invitation`,
+          `DTSTAMP:${stamp}`,
+          ...when,
+          `SUMMARY:${escapeIcs(title)}`,
+          `LOCATION:${escapeIcs(`${e.venue}, ${city}, Cameroon`)}`,
+          `DESCRIPTION:${escapeIcs(details)}`,
+          "END:VEVENT",
+        );
+      }
+    }
+  }
+
+  lines.push("END:VCALENDAR");
+  return lines.join("\r\n");
 }
 
-export function googleCalendarUrl() {
-  const e = eventDetails();
-  const params = new URLSearchParams({
-    action: "TEMPLATE",
-    text: e.title,
-    dates: `${e.start}/${e.end}`,
-    location: e.location,
-    details: e.description,
-  });
-  return `https://calendar.google.com/calendar/render?${params.toString()}`;
-}
+export { mapsUrl };

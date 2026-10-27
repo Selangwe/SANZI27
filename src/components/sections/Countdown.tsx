@@ -4,7 +4,6 @@ import { CalendarPlus } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { wedding } from "@/content/wedding";
-import { googleCalendarUrl } from "@/lib/calendar";
 import { Reveal } from "../ui/Reveal";
 import { Section } from "../ui/Section";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -24,7 +23,7 @@ export function Countdown() {
 
       <div className="mt-14 grid items-center gap-14 md:grid-cols-2 md:gap-20">
         <Reveal>
-          <MonthCalendar date={event.date} />
+          <MonthCalendar dates={event.dates} />
         </Reveal>
 
         <Reveal delay={0.15} className="flex flex-col items-center">
@@ -35,14 +34,9 @@ export function Countdown() {
               <CalendarPlus size={16} weight="light" />
               {countdown.addToCalendarLabel}
             </a>
-            <a
-              href={googleCalendarUrl()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[0.65rem] uppercase tracking-[0.25em] text-stone underline decoration-sand underline-offset-4 hover:text-ink"
-            >
-              or add to Google Calendar
-            </a>
+            <p className="max-w-xs text-center text-xs leading-relaxed text-stone">
+              Adds every celebration to your phone&apos;s calendar, with venues and dress codes.
+            </p>
           </div>
         </Reveal>
       </div>
@@ -50,8 +44,10 @@ export function Countdown() {
   );
 }
 
-function MonthCalendar({ date }: { date: string }) {
-  const [year, month, day] = date.split("-").map(Number);
+/** One month, with every celebration day circled (all dates are in the same month). */
+function MonthCalendar({ dates }: { dates: readonly string[] }) {
+  const [year, month] = dates[0].split("-").map(Number);
+  const days = new Set(dates.map((d) => Number(d.split("-")[2])));
   const cells = useMemo(() => {
     const firstWeekday = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
     const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
@@ -71,7 +67,7 @@ function MonthCalendar({ date }: { date: string }) {
         ))}
         {cells.map((d, i) => (
           <span key={i} className="relative flex aspect-square items-center justify-center text-sm">
-            {d === day ? (
+            {d !== null && days.has(d) ? (
               <>
                 <motion.span
                   aria-hidden="true"

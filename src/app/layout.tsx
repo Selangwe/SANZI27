@@ -35,7 +35,7 @@ const jost = Jost({
 
 const { partnerOne, partnerTwo } = wedding.couple;
 const title = `${partnerOne.firstName} & ${partnerTwo.firstName}: Wedding Invitation`;
-const description = `Join us on ${wedding.event.displayDate} at ${wedding.venue.name}.`;
+const description = `${wedding.couple.weddingName}: join us in ${wedding.venue.name}, Cameroon, from ${wedding.event.displayDate}.`;
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??

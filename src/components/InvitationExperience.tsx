@@ -2,6 +2,7 @@
 
 import { AnimatePresence, MotionConfig } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
+import { wedding } from "@/content/wedding";
 import { EnvelopeIntro } from "./envelope/EnvelopeIntro";
 import { OpeningCover } from "./sections/OpeningCover";
 import { Families } from "./sections/Families";
@@ -10,7 +11,8 @@ import { Story } from "./sections/Story";
 import { Countdown } from "./sections/Countdown";
 import { WeddingParty } from "./sections/WeddingParty";
 import { Rsvp } from "./sections/Rsvp";
-import { Venue } from "./sections/Venue";
+import { Celebrations } from "./sections/Celebrations";
+import { Programme } from "./sections/Programme";
 import { Gifts } from "./sections/Gifts";
 import { Faq } from "./sections/Faq";
 import { Footer } from "./sections/Footer";
@@ -42,11 +44,12 @@ export function InvitationExperience() {
         <InvitationText />
         <Story />
         <Countdown />
-        <WeddingParty />
+        <Celebrations />
+        <Programme />
+        {wedding.sections.weddingParty && <WeddingParty />}
         <Rsvp />
-        <Venue />
-        <Gifts />
-        <Faq />
+        {wedding.sections.gifts && <Gifts />}
+        {wedding.sections.faq && <Faq />}
         <Footer />
       </main>
     </MotionConfig>

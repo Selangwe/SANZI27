@@ -14,7 +14,6 @@ import { Crest } from "./Crest";
  */
 export function AcrylicCard() {
   const { partnerOne, partnerTwo, monogramLetters } = wedding.couple;
-  const { event, venue } = wedding;
   const card = wedding.card.acrylic;
 
   return (
@@ -23,10 +22,7 @@ export function AcrylicCard() {
         <CardCrest letter={monogramLetters} />
 
         <div className="acrylic-caps foil">
-          <p>{partnerOne.parents}</p>
-          <p>{card.joiner}</p>
-          <p>{partnerTwo.parents}</p>
-          {card.request.map((line) => (
+          {[...card.hostLines, ...card.request].map((line) => (
             <p key={line}>{line}</p>
           ))}
         </div>
@@ -38,19 +34,21 @@ export function AcrylicCard() {
         </div>
 
         <div className="acrylic-caps foil">
-          <p>{event.displayDateFormal}</p>
-          <p>{event.displayYearFormal}</p>
-          <p>{event.displayTimeFormal}</p>
+          {card.dateLines.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
         </div>
 
         <div className="flex flex-col items-center">
-          <p className="acrylic-venue foil px-[0.3em]">{venue.name}</p>
+          <p className="acrylic-venue foil px-[0.3em]">{card.place}</p>
           <div className="acrylic-caps foil">
-            {venue.addressLines.map((line) => (
+            {card.placeLines.map((line) => (
               <p key={line}>{line}</p>
             ))}
           </div>
         </div>
+
+        {card.signature && <p className="acrylic-caps foil tracking-[0.4em]">{card.signature}</p>}
       </div>
 
       {/* Light catching the acrylic. The intro sweeps it; idle otherwise. */}

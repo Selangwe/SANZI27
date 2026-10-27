@@ -9,8 +9,8 @@ export function InvitationText() {
   const { invitation, event, venue } = wedding;
 
   const fill = (text: string) =>
-    text.split(/(\{date\}|\{time\}|\{venue\})/g).map((part, i) => {
-      const value = { "{date}": event.displayDate, "{time}": event.displayTime, "{venue}": venue.name }[part];
+    text.split(/(\{date\}|\{venue\})/g).map((part, i) => {
+      const value = { "{date}": event.displayDate, "{venue}": venue.name }[part];
       return value ? (
         <span key={i} className="whitespace-nowrap not-italic text-ink">
           {value}
@@ -33,7 +33,7 @@ export function InvitationText() {
         ))}
       </div>
       <Reveal delay={0.4} className="mt-12 flex justify-center">
-        <p className="font-script text-4xl text-gold">{wedding.couple.monogram}</p>
+        <p className="font-display text-2xl tracking-[0.3em] text-gold">{wedding.couple.weddingName}</p>
       </Reveal>
     </Section>
   );

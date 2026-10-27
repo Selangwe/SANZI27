@@ -7,11 +7,13 @@ import { Section } from "../ui/Section";
 
 /**
  * Tall terracotta title over an arched couple photo, script names, date and
- * venue, then both full names with their parents.
+ * venue, then (once added in wedding.ts) both full names and their parents.
  */
 export function Families() {
   const { partnerOne, partnerTwo } = wedding.couple;
   const { families, event, venue } = wedding;
+  // Only repeat the names in full once surnames have been added
+  const showFullNames = partnerOne.fullName !== partnerOne.firstName || partnerTwo.fullName !== partnerTwo.firstName;
 
   return (
     <Section id="families" className="paper">
@@ -38,15 +40,19 @@ export function Families() {
 
         <Reveal delay={0.2} className="mt-16 w-full">
           <p className="font-display text-lg italic text-stone">{families.intro}</p>
-          <p className="mt-2 font-display text-2xl font-semibold text-ink">
-            {partnerOne.fullName} <span className="font-normal italic text-gold">&amp;</span> {partnerTwo.fullName}
-          </p>
+          {showFullNames && (
+            <p className="mt-2 font-display text-2xl font-semibold text-ink">
+              {partnerOne.fullName} <span className="font-normal italic text-gold">&amp;</span> {partnerTwo.fullName}
+            </p>
+          )}
         </Reveal>
 
-        <div className="mt-10 grid w-full grid-cols-1 gap-8 border-t border-sand pt-10 sm:grid-cols-2">
-          <Parents relation={partnerOne.relation} parents={partnerOne.parents} />
-          <Parents relation={partnerTwo.relation} parents={partnerTwo.parents} />
-        </div>
+        {(partnerOne.parents || partnerTwo.parents) && (
+          <div className="mt-10 grid w-full grid-cols-1 gap-8 border-t border-sand pt-10 sm:grid-cols-2">
+            {partnerOne.parents && <Parents relation={partnerOne.relation} parents={partnerOne.parents} />}
+            {partnerTwo.parents && <Parents relation={partnerTwo.relation} parents={partnerTwo.parents} />}
+          </div>
+        )}
       </div>
     </Section>
   );

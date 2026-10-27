@@ -63,9 +63,11 @@ export function Rsvp() {
   return (
     <Section id="rsvp" className="bg-linen/60">
       <SectionHeading eyebrow={rsvp.eyebrow} title={rsvp.heading} />
-      <Reveal className="mt-4 text-center">
-        <p className="font-display text-lg italic text-stone">{rsvp.replyBy}</p>
-      </Reveal>
+      {rsvp.replyBy && (
+        <Reveal className="mt-4 text-center">
+          <p className="font-display text-lg italic text-stone">{rsvp.replyBy}</p>
+        </Reveal>
+      )}
 
       <Reveal delay={0.1} className="mx-auto mt-12 max-w-md">
         <AnimatePresence mode="wait">

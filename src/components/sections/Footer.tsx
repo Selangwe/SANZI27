@@ -14,7 +14,8 @@ export function Footer() {
           <span className="font-display text-3xl italic text-gold">&amp;</span>
           <span>{couple.partnerTwo.firstName}</span>
         </p>
-        <p className="mt-8 font-display text-lg text-stone">{event.shortDate}</p>
+        <p className="mt-6 font-display text-lg italic text-stone">{couple.tagline}</p>
+        <p className="mt-6 font-display text-lg text-stone">{event.shortDate}</p>
         <p className="mt-1 text-sm text-gold">{couple.hashtag}</p>
       </Reveal>
     </footer>
