@@ -4,39 +4,96 @@
  * so the intro works (and looks finished) before the real artwork arrives.
  */
 
-export function EnvelopeBodyArt() {
+type Variant = "noir" | "ivory";
+
+const PALETTE = {
+  ivory: {
+    back: ["#e6dac6", "#ddd0b9"],
+    side: ["#ebe1d0", "#e2d6c1"],
+    bottom: ["#f3ece0", "#ece2d2"],
+    flap: ["#f2eadd", "#e8dcc8"],
+    line: "#b9a88d",
+    lineOpacity: 0.35,
+    shadow: "#6b5a43",
+    shadowOpacity: 0.18,
+  },
+  // Matte black card stock with a faint satin sheen on the folds
+  noir: {
+    back: ["#1d1d1f", "#151516"],
+    side: ["#222224", "#19191a"],
+    bottom: ["#2a2a2c", "#1f1f21"],
+    flap: ["#2b2b2d", "#1b1b1d"],
+    line: "#ffffff",
+    lineOpacity: 0.1,
+    shadow: "#000000",
+    shadowOpacity: 0.55,
+  },
+} as const;
+
+export function EnvelopeBodyArt({ variant = "ivory" }: { variant?: Variant }) {
+  const c = PALETTE[variant];
+  const k = `env-${variant}`;
   return (
     <svg viewBox="0 0 700 500" preserveAspectRatio="none" className="h-full w-full" aria-hidden="true">
       <defs>
-        <linearGradient id="env-back" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#e6dac6" />
-          <stop offset="1" stopColor="#ddd0b9" />
+        <linearGradient id={`${k}-back`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor={c.back[0]} />
+          <stop offset="1" stopColor={c.back[1]} />
         </linearGradient>
-        <linearGradient id="env-side" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#ebe1d0" />
-          <stop offset="1" stopColor="#e2d6c1" />
+        <linearGradient id={`${k}-side`} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor={c.side[0]} />
+          <stop offset="1" stopColor={c.side[1]} />
         </linearGradient>
-        <linearGradient id="env-bottom" x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0" stopColor="#f3ece0" />
-          <stop offset="1" stopColor="#ece2d2" />
+        <linearGradient id={`${k}-bottom`} x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stopColor={c.bottom[0]} />
+          <stop offset="1" stopColor={c.bottom[1]} />
         </linearGradient>
-        <filter id="env-fold-shadow" x="-10%" y="-20%" width="120%" height="140%">
-          <feDropShadow dx="0" dy="-3" stdDeviation="4" floodColor="#6b5a43" floodOpacity="0.18" />
+        <filter id={`${k}-fold-shadow`} x="-10%" y="-20%" width="120%" height="140%">
+          <feDropShadow dx="0" dy="-3" stdDeviation="4" floodColor={c.shadow} floodOpacity={c.shadowOpacity} />
         </filter>
       </defs>
-      <rect width="700" height="500" rx="10" fill="url(#env-back)" />
-      <path d="M0 10 Q0 0 10 0 L338 262 Q350 272 338 282 L10 500 Q0 500 0 490 Z" fill="url(#env-side)" />
+      <rect width="700" height="500" rx="10" fill={`url(#${k}-back)`} />
+      <path d="M0 10 Q0 0 10 0 L338 262 Q350 272 338 282 L10 500 Q0 500 0 490 Z" fill={`url(#${k}-side)`} />
       <path
         d="M700 10 Q700 0 690 0 L362 262 Q350 272 362 282 L690 500 Q700 500 700 490 Z"
-        fill="url(#env-side)"
+        fill={`url(#${k}-side)`}
       />
       <path
         d="M0 490 L332 238 Q350 226 368 238 L700 490 Q700 500 690 500 L10 500 Q0 500 0 490 Z"
-        fill="url(#env-bottom)"
-        filter="url(#env-fold-shadow)"
+        fill={`url(#${k}-bottom)`}
+        filter={`url(#${k}-fold-shadow)`}
       />
-      <path d="M0 490 L332 238 Q350 226 368 238 L700 490" fill="none" stroke="#b9a88d" strokeOpacity="0.35" />
-      <rect x="0.5" y="0.5" width="699" height="499" rx="10" fill="none" stroke="#b9a88d" strokeOpacity="0.35" />
+      <path d="M0 490 L332 238 Q350 226 368 238 L700 490" fill="none" stroke={c.line} strokeOpacity={c.lineOpacity} />
+      <rect x="0.5" y="0.5" width="699" height="499" rx="10" fill="none" stroke={c.line} strokeOpacity={c.lineOpacity} />
+    </svg>
+  );
+}
+
+export function EnvelopeFlapArt({ variant = "ivory" }: { variant?: Variant }) {
+  const c = PALETTE[variant];
+  const k = `flap-${variant}`;
+  return (
+    <svg viewBox="0 0 700 280" preserveAspectRatio="none" className="h-full w-full overflow-visible" aria-hidden="true">
+      <defs>
+        <linearGradient id={`${k}-fill`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor={c.flap[0]} />
+          <stop offset="1" stopColor={c.flap[1]} />
+        </linearGradient>
+        <filter id={`${k}-shadow`} x="-10%" y="-10%" width="120%" height="140%">
+          <feDropShadow dx="0" dy="5" stdDeviation="6" floodColor={c.shadow} floodOpacity={c.shadowOpacity} />
+        </filter>
+      </defs>
+      <path
+        d="M10 0 L690 0 Q700 0 692 7 L372 266 Q350 283 328 266 L8 7 Q0 0 10 0 Z"
+        fill={`url(#${k}-fill)`}
+        filter={`url(#${k}-shadow)`}
+      />
+      <path
+        d="M8 7 L328 266 Q350 283 372 266 L692 7"
+        fill="none"
+        stroke={c.line}
+        strokeOpacity={variant === "noir" ? 0.16 : 0.45}
+      />
     </svg>
   );
 }

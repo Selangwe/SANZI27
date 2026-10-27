@@ -8,7 +8,7 @@ type Props = {
   alt?: string;
   sizes: string;
   fallback: React.ReactNode;
-  fit?: "contain" | "cover";
+  fit?: "contain" | "cover" | "fill";
   priority?: boolean;
   /** Extra classes for the <img> (e.g. a drop-shadow that follows the PNG's alpha) */
   imgClassName?: string;
@@ -46,7 +46,7 @@ export function LayerImage({
           draggable={false}
           onLoad={() => setStatus("loaded")}
           onError={() => setStatus("error")}
-          className={`select-none ${fit === "cover" ? "object-cover" : "object-contain"} ${imgClassName}`}
+          className={`select-none ${fit === "cover" ? "object-cover" : fit === "fill" ? "object-fill" : "object-contain"} ${imgClassName}`}
         />
       )}
     </div>

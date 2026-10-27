@@ -44,21 +44,21 @@ To add or remove wedding party members or registry items, edit the arrays in
 
 ### Envelope (`public/envelope/`)
 
-The intro is built from separate transparent layers, all cut from the client's
-closed-envelope artwork (612 × 407) so they line up exactly:
+The intro is a black envelope sealed with a gold mirror-acrylic crest (the
+couple's initials, `couple.monogramLetters`, inside a filigree frame), after
+the black tri-fold acrylic suite reference. It is built from separate layers:
 
 ```
-z40  wax-seal.png           sits on the flap's point
-z35  envelope-flowers.png   top-left bouquet, lying on the envelope
-z30  envelope-flap.png      the V flap ("From the Sanzi"), hinged on its top edge
-z20  envelope-pocket.png    the envelope with the flap cut away (bottom bouquet, 2027)
+z40  noir-crest.png         gold crest on the flap's point
+z30  noir-flap.png          the black V flap, hinged on its top edge
+z20  noir-body.png          the envelope's front (pocket folds)
 z15  card (code)            the invitation card, tucked inside
 z10  inside panel (CSS)     the envelope's inside, seen once the flap opens
 ```
 
-`card-paper.png` is the card's deckle-edged paper (with its shadow) and
-`paper-grain.png` a small grain tile. Both are pre-rendered so nothing heavy is
-drawn live while the envelope animates.
+Each layer is drawn in code until a PNG with that name exists in
+`public/envelope/`; see `public/envelope/README.md` for the shapes. The earlier
+kraft "From the Sanzi" artwork is still in that folder but is no longer used.
 
 The invitation card is laid out in code. `card.style` in `wedding.ts` picks one
 of two faces:
@@ -75,15 +75,14 @@ of two faces:
 
 On phones either card stretches to fill almost the whole screen.
 
-If the envelope artwork changes, re-cut the layers and update the `BODY`,
-`FLAP`, `SEAL` and `FLAP_OUTLINE` constants (artwork pixels) at the top of
-`src/components/envelope/EnvelopeIntro.tsx`.
+To change the envelope's proportions, edit the `ART`, `BODY`, `FLAP`, `CREST`
+and `CARD` constants at the top of `src/components/envelope/EnvelopeIntro.tsx`.
 
 **Opening sequence** (`EnvelopeIntro.tsx`, `open()`), with the steps overlapping
 so it flows (about 2.5 s in all, plus about 1.6 s for the acrylic card's extra
 steps):
 
-1. The seal catches the light (a quick glint), then lifts, scales to 1.15 and
+1. The crest catches the light (a quick glint), then lifts, scales to 1.15 and
    fades (0.45 s).
 2. 0.3 s in, the flap rotates `rotateX 0 → 180°` about its top edge inside a
    `perspective: 1400px` container (0.8 s), swinging toward the viewer and

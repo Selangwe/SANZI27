@@ -83,14 +83,13 @@ export const wedding = {
     eyebrow: "You are cordially invited",
     tapHint: "Tap to open",
     /**
-     * Transparent PNG layers, all cut from the client's envelope artwork
-     * (612 × 407) so they line up. See public/envelope/README.md.
+     * Optional transparent PNGs for the black envelope. Until a file exists,
+     * that layer is drawn in code. See public/envelope/README.md for sizes.
      */
     images: {
-      pocket: "/envelope/envelope-pocket.png",
-      flap: "/envelope/envelope-flap.png",
-      flowers: "/envelope/envelope-flowers.png",
-      seal: "/envelope/wax-seal.png",
+      body: "/envelope/noir-body.png",
+      flap: "/envelope/noir-flap.png",
+      seal: "/envelope/noir-crest.png",
     },
   },
 

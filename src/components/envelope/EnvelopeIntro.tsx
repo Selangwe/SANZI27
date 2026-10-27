@@ -3,49 +3,47 @@
 import { motion, useAnimate, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { wedding } from "@/content/wedding";
-import { EnvelopeBodyArt, WaxSealArt } from "./fallbacks";
+import { Crest } from "../suite/Crest";
+import { EnvelopeBodyArt, EnvelopeFlapArt } from "./fallbacks";
 import { InvitationCardFace, cardRestingRect } from "./InvitationCardFace";
 import { LayerImage } from "./LayerImage";
 
 const LUXE = [0.22, 1, 0.36, 1] as const;
-const LAYER_COUNT = 4; // pocket, flap, flowers, seal
+const LAYER_COUNT = 3; // body, flap, crest
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /*
- * Geometry of the client's envelope artwork (612 × 407 px), in % of the stage.
- * All four PNG layers were cut from that one image, so they line up exactly.
+ * Geometry of the stage, in "art px" (converted to % so it scales): a black
+ * envelope (407 × 275, a 20 px margin all round) with a V flap and a gold
+ * crest on its point.
  */
 const pct = (v: number, of: number) => `${((v / of) * 100).toFixed(3)}%`;
-const ART = { w: 612, h: 407 };
+const ART = { w: 447, h: 315 };
 /** The envelope's paper rectangle */
-const BODY = { left: 103, top: 97, right: 510, bottom: 372 };
-/** The flap PNG's box (hinge = its top edge) */
-const FLAP = { left: 103, top: 97, w: 407, h: 202 };
-/** Wax seal centre and diameter */
-const SEAL = { x: 302, y: 276, d: 84 };
-/** Tucked card: width (% of stage) and top edge (px of the artwork) */
-const CARD = { width: 44, centerX: 306, top: 108 };
+const BODY = { left: 20, top: 20, right: 427, bottom: 295 };
+/** The flap's box (hinge = its top edge, point at bottom centre) */
+const FLAP = { left: 20, top: 20, w: 407, h: 154 };
+/** Gold crest: centre (on the flap's point) and width; the crest is 10:7 */
+const CREST = { x: 223.5, y: 174, w: 138 };
+/** Tucked card: width (% of stage) and top edge (art px) */
+const CARD = { width: 60, centerX: 223.5, top: 31 };
 
-/** Flap outline in % of the flap box, used for the plain inside face */
-const FLAP_OUTLINE: [number, number][] = [
-  [0, 0], [99.75, 0], [99.26, 3.96], [97.54, 10.4], [94.59, 21.29], [87.47, 31.19], [80.34, 41.09],
-  [74.94, 50.99], [69.78, 60.89], [65.85, 70.79], [62.41, 80.69], [55.77, 90.59], [49.63, 99.5],
-  [39.8, 80.69], [29.24, 60.89], [18.92, 41.09], [9.34, 21.29], [0, 2.48],
-];
-const polygon = (mirror: boolean) =>
-  `polygon(${FLAP_OUTLINE.map(([x, y]) => `${mirror ? 100 - x : x}% ${y}%`).join(", ")})`;
+/** V-shaped flap, in % of the flap box (also the inside face and its shading) */
+const FLAP_V = "polygon(0% 0%, 100% 0%, 50% 100%)";
 
 /**
  * Layered envelope intro.
  *
- *   z 40  wax seal       sits on the flap's point
- *   z 35  flowers        top-left bouquet, lying on top of the envelope
- *   z 30  flap           hinged on its top edge (drops to z 12 once open)
- *   z 20  pocket         the envelope with the flap cut away (bottom bouquet, 2027)
+ *   z 40  gold crest     mirror-acrylic SZ crest on the flap's point
+ *   z 30  flap           black V flap, hinged on its top edge (drops to z 12 once open)
+ *   z 20  body           the black envelope's front (pocket folds)
  *   z 15  card           tucked inside, slides up and out
  *   z 10  inside panel   the envelope's inside, seen once the flap is open
  *
- * Sequence on tap (steps overlap so it flows): seal glints, lifts + fades →
+ * Each layer can be replaced by a PNG (see wedding.ts → envelope.images);
+ * until then it is drawn in code.
+ *
+ * Sequence on tap (steps overlap so it flows): crest glints, lifts + fades →
  * flap swings open toward the viewer in 3D → card slides up out of the pocket
  * → (acrylic card) it tilts toward the light as a glare sweeps across it →
  * the room dims and the card grows to fill the screen → onComplete() unlocks
@@ -76,7 +74,7 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
     const speed = reduceMotion ? 0.4 : 1;
     const d = (s: number) => s * speed;
 
-    // 1. The gold seal catches the light, then lifts, grows slightly and fades away.
+    // 1. The gold crest catches the light, then lifts, grows slightly and fades away.
     if (!reduceMotion) {
       await animate(
         "[data-seal]",
@@ -124,10 +122,10 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
     }
   };
 
-  const { partnerOne, partnerTwo, monogram } = wedding.couple;
+  const { partnerOne, partnerTwo, monogramLetters } = wedding.couple;
   const { images, eyebrow, tapHint } = wedding.envelope;
   const face = { backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" } as const;
-  const artSizes = "(max-width: 640px) 94vw, 600px";
+  const artSizes = "(max-width: 640px) 90vw, 520px";
 
   return (
     <motion.div
@@ -178,13 +176,13 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
           aria-label="Open the invitation"
           onClick={open}
           onKeyDown={onKeyDown}
-          className="relative aspect-[612/407] w-[min(96vw,740px,110dvh)] cursor-pointer outline-none [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:ring-gold/60 focus-visible:ring-offset-8 focus-visible:ring-offset-cream"
+          className="relative aspect-[447/315] w-[min(94vw,560px,100dvh)] cursor-pointer outline-none [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:ring-gold/60 focus-visible:ring-offset-8 focus-visible:ring-offset-cream"
           style={{ perspective: 1400 }}
         >
           {/* Ground shadow under the envelope's rectangle */}
           <div
             aria-hidden="true"
-            className="absolute h-6 rounded-[50%] bg-[#5d4c36]/25 blur-xl"
+            className="absolute h-6 rounded-[50%] bg-black/40 blur-xl"
             style={{ left: pct(BODY.left + 20, ART.w), right: pct(ART.w - BODY.right + 20, ART.w), top: pct(BODY.bottom - 16, ART.h) }}
           />
 
@@ -198,7 +196,7 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
               width: pct(BODY.right - BODY.left, ART.w),
               height: pct(BODY.bottom - BODY.top, ART.h),
               background:
-                "linear-gradient(180deg, rgba(70,50,30,0.22), rgba(70,50,30,0) 18%), linear-gradient(180deg, #c9b193, #d6c2a6 60%, #cdb69a)",
+                "linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0) 22%), linear-gradient(180deg, #161617, #1d1d1f 60%, #19191a)",
             }}
           />
 
@@ -211,7 +209,7 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
               clipPath: `inset(-400% -100% ${pct(ART.h - BODY.bottom + 8, ART.h)} -100%)`,
               // 3D for the card's tilt, centred on where the card is once it is out
               perspective: 1400,
-              perspectiveOrigin: "50% -25%",
+              perspectiveOrigin: "50% -55%",
             }}
           >
             <div
@@ -228,9 +226,23 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
             </div>
           </div>
 
-          {/* z20: pocket (the envelope with its flap cut away) */}
-          <div className="absolute inset-0 z-20">
-            <LayerImage src={images.pocket} sizes={artSizes} fallback={<BodyFallback />} onSettled={onLayerSettled} />
+          {/* z20: the envelope's front */}
+          <div
+            className="absolute z-20"
+            style={{
+              left: pct(BODY.left, ART.w),
+              top: pct(BODY.top, ART.h),
+              width: pct(BODY.right - BODY.left, ART.w),
+              height: pct(BODY.bottom - BODY.top, ART.h),
+            }}
+          >
+            <LayerImage
+              src={images.body}
+              sizes={artSizes}
+              fit="fill"
+              fallback={<EnvelopeBodyArt variant="noir" />}
+              onSettled={onLayerSettled}
+            />
           </div>
 
           {/* z30: flap, hinged on its top edge: artwork outside, plain paper inside */}
@@ -251,35 +263,31 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
               <LayerImage
                 src={images.flap}
                 sizes={artSizes}
-                fallback={<div className="absolute inset-0 bg-[#bba185]" style={{ clipPath: polygon(false) }} />}
+                fit="fill"
+                fallback={<EnvelopeFlapArt variant="noir" />}
                 onSettled={onLayerSettled}
               />
-              <div data-flap-shade className="absolute inset-0 bg-[#3a2b1c] opacity-0" style={{ clipPath: polygon(false) }} />
+              <div data-flap-shade className="absolute inset-0 bg-black opacity-0" style={{ clipPath: FLAP_V }} />
             </div>
             <div className="absolute inset-0" style={{ ...face, transform: "rotateY(180deg)" }}>
               <div
                 className="absolute inset-0"
-                style={{ clipPath: polygon(true), background: "linear-gradient(180deg, #cdb79b, #dcc8ad)" }}
+                style={{ clipPath: FLAP_V, background: "linear-gradient(180deg, #232325, #18181a)" }}
               />
-              <div data-flap-shade className="absolute inset-0 bg-[#3a2b1c] opacity-0" style={{ clipPath: polygon(true) }} />
+              <div data-flap-shade className="absolute inset-0 bg-black opacity-0" style={{ clipPath: FLAP_V }} />
             </div>
           </motion.div>
 
-          {/* z35: top-left bouquet lying on the envelope */}
-          <div className="pointer-events-none absolute inset-0 z-[35]">
-            <LayerImage src={images.flowers} sizes={artSizes} fallback={null} onSettled={onLayerSettled} />
-          </div>
-
-          {/* z40: wax seal on the flap's point */}
+          {/* z40: gold mirror-acrylic crest on the flap's point */}
           <div
-            className="absolute z-40 aspect-square -translate-x-1/2 -translate-y-1/2"
-            style={{ left: pct(SEAL.x, ART.w), top: pct(SEAL.y, ART.h), width: pct(SEAL.d, ART.w) }}
+            className="absolute z-40 aspect-[200/140] -translate-x-1/2 -translate-y-[58%]"
+            style={{ left: pct(CREST.x, ART.w), top: pct(CREST.y, ART.h), width: pct(CREST.w, ART.w) }}
           >
             <motion.div data-seal className="absolute inset-0">
               <LayerImage
                 src={images.seal}
-                sizes="140px"
-                fallback={<WaxSealArt monogram={monogram} />}
+                sizes="200px"
+                fallback={<Crest letter={monogramLetters} finish="mirror" className="h-full w-full" />}
                 onSettled={onLayerSettled}
               />
             </motion.div>
@@ -304,22 +312,5 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
         <InvitationCardFace />
       </div>
     </motion.div>
-  );
-}
-
-/** Drawn stand-in for the pocket artwork, placed on the envelope's rectangle */
-function BodyFallback() {
-  return (
-    <div
-      className="absolute"
-      style={{
-        left: pct(BODY.left, ART.w),
-        top: pct(BODY.top, ART.h),
-        width: pct(BODY.right - BODY.left, ART.w),
-        height: pct(BODY.bottom - BODY.top, ART.h),
-      }}
-    >
-      <EnvelopeBodyArt />
-    </div>
   );
 }
