@@ -78,25 +78,24 @@ On phones either card stretches to fill almost the whole screen.
 To change the envelope's proportions, edit the `ART`, `BODY`, `FLAP`, `CREST`
 and `CARD` constants at the top of `src/components/envelope/EnvelopeIntro.tsx`.
 
-**Opening sequence** (`EnvelopeIntro.tsx`, `open()`), with the steps overlapping
-so it flows (about 2.5 s in all, plus about 1.6 s for the acrylic card's extra
-steps):
+**Opening sequence** (`EnvelopeIntro.tsx`, `open()`) is one continuous timeline,
+about 3 seconds from tap to page. Each step starts while the previous one is
+still moving and nothing changes direction, so it reads as a single gesture:
 
-1. The crest catches the light (a quick glint), then lifts, scales to 1.15 and
-   fades (0.45 s).
-2. 0.3 s in, the flap rotates `rotateX 0 → 180°` about its top edge inside a
-   `perspective: 1400px` container (0.8 s), swinging toward the viewer and
-   folding back point-up. Edge-on it drops behind the card.
-3. Before the flap has settled, the card slides up out of the pocket while the
-   envelope sinks (0.95 s).
-4. Acrylic card only: it tilts toward the viewer in 3D while a band of light
-   sweeps across it, like light catching the acrylic (1.2 s).
-5. The card grows to fill the screen (0.85 s; almost edge to edge on phones).
-   For the acrylic card the room dims to near black at the same time, and on
-   the full-screen card the light sweeps across again every few seconds.
-   Scrolling then unlocks and the page continues below it.
-When the guest's device asks for reduced motion, the same sequence plays at
-well under half the duration.
+1. 0.0 s: the crest glints and, in the same motion, lifts away and fades.
+2. 0.2 s: the flap swings toward the viewer on its top hinge (`rotateX`
+   0 → 180° in a `perspective` container) and drops behind the card halfway.
+3. 0.6 s: the card rises out of the pocket while the envelope sinks just
+   enough that the card arrives at the centre of the screen.
+4. 1.55 s: while the card is still gliding, a pre-mounted full-screen copy
+   takes its exact place and grows outward from the centre, tilting toward
+   the light as a glare sweeps across the acrylic. The envelope falls away
+   and the room dims at the same time.
+5. About 3 s: the page underneath, showing the identical card, cross-fades in
+   and scrolling unlocks.
+
+When the guest's device asks for reduced motion, the tilt and glare are
+skipped and the rest plays at well under half the duration.
 
 ---
 

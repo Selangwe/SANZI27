@@ -10,7 +10,6 @@ import { LayerImage } from "./LayerImage";
 
 const LUXE = [0.22, 1, 0.36, 1] as const;
 const LAYER_COUNT = 3; // body, flap, crest
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /*
  * Geometry of the stage, in "art px" (converted to % so it scales): a black
@@ -43,11 +42,11 @@ const FLAP_V = "polygon(0% 0%, 100% 0%, 50% 100%)";
  * Each layer can be replaced by a PNG (see wedding.ts → envelope.images);
  * until then it is drawn in code.
  *
- * Sequence on tap (steps overlap so it flows): crest glints, lifts + fades →
- * flap swings open toward the viewer in 3D → card slides up out of the pocket
- * → (acrylic card) it tilts toward the light as a glare sweeps across it →
- * the room dims and the card grows to fill the screen → onComplete() unlocks
- * scrolling.
+ * Sequence on tap: one continuous, overlapping timeline (see open()): the
+ * crest glints and lifts away → the flap swings open in 3D → the card rises
+ * out of the pocket to the centre of the screen → without stopping, it grows
+ * to fill the screen, tilting toward the light as a glare sweeps across it,
+ * while the room dims → onComplete() unlocks scrolling.
  */
 export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
   const acrylic = wedding.card.style === "acrylic";
@@ -71,47 +70,82 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
   const open = useCallback(async () => {
     if (phase !== "idle" || !ready) return;
     setPhase("opening");
-    const speed = reduceMotion ? 0.4 : 1;
-    const d = (s: number) => s * speed;
 
-    // 1. The gold crest catches the light, then lifts, grows slightly and fades away.
-    if (!reduceMotion) {
-      await animate(
-        "[data-seal]",
-        { scale: [1, 1.06, 1], filter: ["brightness(1)", "brightness(1.35)", "brightness(1)"] },
-        { duration: 0.45, ease: "easeInOut" },
-      );
-    }
-    animate("[data-seal]", { y: -36, scale: 1.15, opacity: 0 }, { duration: d(0.45), ease: [0.4, 0, 0.2, 1] });
-    await sleep(d(300));
+    /*
+     * One continuous timeline (seconds from the tap). Every step starts while
+     * the previous one is still moving, and nothing changes direction, so the
+     * eye follows a single gesture from the crest to the full-screen card:
+     *
+     *   0.00  crest glints and, in the same motion, lifts away and fades
+     *   0.20  flap swings open (drops behind the card at its halfway point)
+     *   0.60  card rises out of the pocket while the envelope sinks just enough
+     *         that the card arrives at the centre of the screen
+     *   1.55  while it is still gliding, the card is handed to its full-screen
+     *         copy, which grows outward from the centre, tilting toward the
+     *         light as a glare sweeps across it; the envelope falls away and
+     *         the room dims
+     *   ~3.0  the page underneath (showing the same card) takes over
+     */
+    const tilt = acrylic && !reduceMotion;
+    const k = reduceMotion ? 0.4 : 1;
+    const at = (s: number) => s * k;
+    const SMOOTH = [0.45, 0, 0.2, 1] as const; // gentle start, soft finish
+    const RISE = 1.1; // card's travel, in card heights (clears the envelope's top edge)
 
-    // 2. Flap swings forward toward the viewer on its top hinge and folds back
-    //    point-up. Edge-on (halfway) it drops behind the card.
-    const flapTime = d(0.8);
-    animate("[data-flap]", { rotateX: 180 }, { duration: flapTime, ease: [0.45, 0, 0.25, 1] });
-    animate("[data-flap-shade]", { opacity: [0, 0.28, 0] }, { duration: flapTime, ease: "linear" });
-    animate("[data-flap]", { zIndex: 12 }, { duration: 0, delay: flapTime * 0.5 });
-    await sleep(flapTime * 1000 * 0.62);
+    // Where the envelope must end up so the risen card is centred on screen
+    const tucked = cardRef.current?.getBoundingClientRect();
+    const sink = tucked ? innerHeight / 2 - (tucked.top + tucked.height / 2 - RISE * tucked.height) : 0;
 
-    // 3. Card slides up out of the pocket while the envelope settles lower.
-    animate("[data-envelope]", { y: "34%" }, { duration: d(0.95), ease: LUXE });
-    await animate("[data-card]", { y: "-104%" }, { duration: d(0.95), ease: LUXE });
+    // 1. Crest: glint → lift → fade, one tween
+    animate(
+      "[data-seal]",
+      reduceMotion
+        ? { opacity: 0 }
+        : {
+            scale: [1, 1.08, 1.18],
+            y: [0, -6, -40],
+            opacity: [1, 1, 0],
+            filter: ["brightness(1)", "brightness(1.4)", "brightness(1)"],
+          },
+      { duration: at(0.65), ease: "easeInOut", times: [0, 0.3, 1] },
+    );
 
-    // 3b. Acrylic card: it tilts toward the viewer while light sweeps across it.
-    if (acrylic && !reduceMotion) {
-      animate("[data-card] [data-glare]", { x: ["-70%", "70%"] }, { duration: 1.1, ease: [0.45, 0, 0.25, 1] });
-      await animate("[data-card]", { rotateY: [0, -12, 0], rotateX: [0, 5, 0] }, { duration: 1.2, ease: "easeInOut" });
-    }
+    // 2. Flap swings toward the viewer on its top hinge and folds back point-up
+    const flapStart = at(0.2);
+    const flapTime = at(0.8);
+    animate("[data-flap]", { rotateX: 180 }, { duration: flapTime, delay: flapStart, ease: [0.45, 0, 0.25, 1] });
+    animate("[data-flap-shade]", { opacity: [0, 0.28, 0] }, { duration: flapTime, delay: flapStart, ease: "linear" });
+    animate("[data-flap]", { zIndex: 12 }, { duration: 0, delay: flapStart + flapTime * 0.5 });
 
-    // 4. Card expands to fill the screen. The full-size copy is already mounted
-    //    (hidden), so this step only swaps visibility and animates its box.
+    // 3. Card rises while the flap finishes; the envelope sinks so the card
+    //    arrives centred
+    const riseStart = at(0.6);
+    const riseTime = at(1.15);
+    animate("[data-envelope]", { y: sink }, { duration: riseTime, delay: riseStart, ease: SMOOTH });
+    animate("[data-card]", { y: `${-RISE * 100}%` }, { duration: riseTime, delay: riseStart, ease: SMOOTH });
+
+    // 4. Hand-off while the rise is still gliding (~85% through, card already
+    //    clear of the envelope): the full-size copy (mounted, hidden) takes the
+    //    card's exact place and grows outward from there in one motion.
+    await new Promise((r) => setTimeout(r, (riseStart + riseTime * 0.85) * 1000));
     const r = cardRef.current?.getBoundingClientRect();
     const from = r ? { top: r.top, left: r.left, width: r.width, height: r.height } : cardRestingRect(innerWidth, innerHeight);
-    await animate("[data-expand]", { ...from, visibility: "visible" }, { duration: 0 });
+    await animate("[data-expand]", { ...from, visibility: "visible", transformPerspective: 1200 }, { duration: 0 });
     animate("[data-card]", { opacity: 0 }, { duration: 0 });
-    animate("[data-envelope]", { opacity: 0, y: "60%" }, { duration: d(0.6), ease: "easeIn" });
-    if (acrylic) animate("[data-dim]", { opacity: 1 }, { duration: d(0.85), ease: "easeInOut" });
-    await animate("[data-expand]", cardRestingRect(innerWidth, innerHeight), { duration: d(0.85), ease: LUXE });
+
+    const growTime = at(1.5);
+    const GROW = [0.3, 0.15, 0.2, 1] as const; // picks up the rise's remaining glide, then settles
+    animate("[data-envelope]", { opacity: 0, y: sink + innerHeight * 0.25 }, { duration: at(0.9), ease: [0.4, 0, 0.6, 1] });
+    if (acrylic) animate("[data-dim]", { opacity: 1 }, { duration: growTime * 0.9, ease: "easeInOut" });
+    if (tilt) {
+      animate("[data-expand]", { rotateY: [0, -11, 0], rotateX: [0, 4, 0] }, { duration: growTime * 0.9, ease: "easeInOut" });
+      animate("[data-expand] [data-glare]", { x: ["-70%", "70%"] }, { duration: growTime * 0.8, ease: [0.45, 0, 0.25, 1] });
+    }
+    animate("[data-expand]", cardRestingRect(innerWidth, innerHeight), { duration: growTime, ease: GROW });
+
+    // The last stretch of the grow is sub-pixel: let the page take over there,
+    // cross-fading onto the identical card underneath, rather than waiting.
+    await new Promise((r) => setTimeout(r, growTime * 0.88 * 1000));
     onComplete();
   }, [acrylic, animate, phase, ready, reduceMotion, onComplete]);
 
