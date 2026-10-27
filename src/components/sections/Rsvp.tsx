@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, X } from "@phosphor-icons/react";
+import { Check, WhatsappLogo, X } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { wedding } from "@/content/wedding";
@@ -10,7 +10,7 @@ import { Section } from "../ui/Section";
 import { SectionHeading } from "../ui/SectionHeading";
 
 type Choice = "accept" | "decline";
-type Saved = { choice: Choice; name: string };
+type Saved = { choice: Choice; name: string; whatsappUrl?: string };
 const STORAGE_KEY = "wedding-rsvp";
 const fade = {
   initial: { opacity: 0, y: 16 },
@@ -23,41 +23,38 @@ export function Rsvp() {
   const { rsvp } = wedding;
   const [choice, setChoice] = useState<Choice | null>(null);
   const [saved, setSaved] = useState<Saved | null>(null);
-  const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
-  const [error, setError] = useState("");
 
   useEffect(() => setSaved(readLocal<Saved>(STORAGE_KEY)), []);
 
-  async function submit(e: React.FormEvent<HTMLFormElement>) {
+  function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!choice) return;
     const form = new FormData(e.currentTarget);
     const payload = {
       attending: choice === "accept",
-      name: String(form.get("name") ?? ""),
-      email: String(form.get("email") ?? ""),
+      name: String(form.get("name") ?? "").trim(),
+      email: String(form.get("email") ?? "").trim(),
       guests: Number(form.get("guests") ?? 1),
-      dietary: String(form.get("dietary") ?? ""),
-      message: String(form.get("message") ?? ""),
+      dietary: String(form.get("dietary") ?? "").trim(),
+      message: String(form.get("message") ?? "").trim(),
     };
-    setStatus("sending");
-    setError("");
-    try {
-      const res = await fetch("/api/rsvp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error || "Something went wrong.");
-      const next = { choice, name: payload.name };
-      writeLocal(STORAGE_KEY, next);
-      setSaved(next);
-      setStatus("idle");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
-      setStatus("error");
-    }
+
+    // Open WhatsApp straight from the tap (opening it after an await gets blocked as a pop-up).
+    const whatsappUrl = whatsappLink(payload);
+    const tab = window.open(whatsappUrl, "_blank", "noopener");
+    if (!tab) window.location.href = whatsappUrl;
+
+    // Still log the reply on the server and webhook, without holding the guest up.
+    fetch("/api/rsvp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true,
+    }).catch(() => {});
+
+    const next = { choice, name: payload.name, whatsappUrl };
+    writeLocal(STORAGE_KEY, next);
+    setSaved(next);
   }
 
   return (
@@ -77,6 +74,12 @@ export function Rsvp() {
               <p className="mt-4 font-display text-lg italic text-stone">
                 {saved.choice === "accept" ? rsvp.thankYouAccept : rsvp.thankYouDecline}
               </p>
+              {saved.whatsappUrl && (
+                <a href={saved.whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline mt-7">
+                  <WhatsappLogo size={16} weight="light" aria-hidden="true" />
+                  Open WhatsApp again
+                </a>
+              )}
               <button
                 type="button"
                 onClick={() => {
@@ -136,9 +139,9 @@ export function Rsvp() {
                       <Field label="A note for the couple (optional)">
                         <textarea name="message" rows={3} className="field resize-none" />
                       </Field>
-                      {status === "error" && <p className="text-sm text-wax">{error}</p>}
-                      <button type="submit" disabled={status === "sending"} className="btn btn-solid w-full">
-                        {status === "sending" ? "Sending…" : "Send reply"}
+                      <button type="submit" className="btn btn-solid w-full">
+                        <WhatsappLogo size={17} weight="light" aria-hidden="true" />
+                        {rsvp.submitLabel}
                       </button>
                     </div>
                   </motion.form>
@@ -191,4 +194,26 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       {children}
     </label>
   );
+}
+
+/** A wa.me link to the couple's number with the reply written out as the message. */
+function whatsappLink(r: {
+  attending: boolean;
+  name: string;
+  email: string;
+  guests: number;
+  dietary: string;
+  message: string;
+}) {
+  const { rsvp, couple } = wedding;
+  const lines = [
+    `RSVP · ${couple.weddingName}\n`,
+    `Name: ${r.name}`,
+    `Reply: ${r.attending ? rsvp.acceptLabel : rsvp.declineLabel}`,
+    r.attending ? `Guests (incl. me): ${r.guests}` : "",
+    r.attending && r.dietary ? `Dietary: ${r.dietary}` : "",
+    r.email ? `Email: ${r.email}` : "",
+    r.message ? `\nNote: ${r.message}` : "",
+  ].filter(Boolean);
+  return `https://wa.me/${rsvp.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`;
 }

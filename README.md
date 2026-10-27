@@ -111,6 +111,14 @@ to the invitation from it skips the envelope for the rest of that visit.
 
 ## RSVP and gift claims
 
+**RSVP replies go to WhatsApp.** Submitting the form opens WhatsApp with the
+guest's reply already written (name, accept/decline, number of guests, dietary
+needs, email and note), addressed to `rsvp.whatsapp` in `wedding.ts`
+(currently +44 7729 468739). The guest only has to press send. To change the
+number, edit `rsvp.whatsapp` (international format, digits only).
+
+Each RSVP is also still sent to the server in the background, as below.
+
 When a guest submits an RSVP or claims a gift, the browser POSTs to
 `/api/rsvp` or `/api/gift-claim`. Each submission is:
 

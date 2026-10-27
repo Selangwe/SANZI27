@@ -516,6 +516,9 @@ export const wedding = {
     declineLabel: "Regretfully Declines",
     /** Max number of guests a single reply can include (incl. the guest) */
     maxGuests: 4,
+    /** Replies open WhatsApp with the details filled in, addressed to this number (international format, digits only) */
+    whatsapp: "447729468739",
+    submitLabel: "Send reply on WhatsApp",
     thankYouAccept: "We can't wait to celebrate with you!",
     thankYouDecline: "You'll be dearly missed. Thank you for letting us know.",
   },
