@@ -100,6 +100,16 @@ well under half the duration.
 
 ---
 
+## Where to stay (`/stay`)
+
+A separate page lists hotels near each set of celebrations (Bafoussam on 16
+February; Limbe/Bota on 20–21 February). Edit the list in `lodging` in
+`wedding.ts`. Each hotel is pinned on an embedded Google map by its
+`mapsQuery` (Google finds it by name, so no coordinates or API key are
+needed); tapping a hotel moves the pin, and the arrow button opens directions.
+The page is linked from the Celebrations section and the footer. Coming back
+to the invitation from it skips the envelope for the rest of that visit.
+
 ## RSVP and gift claims
 
 When a guest submits an RSVP or claims a gift, the browser POSTs to

@@ -17,20 +17,36 @@ import { Gifts } from "./sections/Gifts";
 import { Faq } from "./sections/Faq";
 import { Footer } from "./sections/Footer";
 
-export function InvitationExperience() {
-  const [opened, setOpened] = useState(false);
+/**
+ * Set once the envelope has been opened. It lives in memory only, so coming
+ * back from another page of the site (e.g. "Where to stay") skips the envelope,
+ * while a fresh visit or reload plays it again.
+ */
+let openedThisVisit = false;
 
-  // Always start at the top, with scrolling locked until the envelope opens.
+export function InvitationExperience() {
+  const [opened, setOpened] = useState(openedThisVisit);
+
+  // Start at the top, with scrolling locked until the envelope opens. When
+  // returning to an already-opened invitation, jump to the #section instead.
   useEffect(() => {
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-    window.scrollTo(0, 0);
+    if (!openedThisVisit) {
+      window.scrollTo(0, 0);
+      return;
+    }
+    const target = location.hash && document.getElementById(location.hash.slice(1));
+    if (target) window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY });
   }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("scroll-locked", !opened);
   }, [opened]);
 
-  const handleOpened = useCallback(() => setOpened(true), []);
+  const handleOpened = useCallback(() => {
+    openedThisVisit = true;
+    setOpened(true);
+  }, []);
 
   return (
     // reducedMotion="user": transform animations become instant fades for guests

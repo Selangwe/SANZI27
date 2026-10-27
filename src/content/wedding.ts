@@ -378,6 +378,91 @@ export const wedding = {
     }[],
   },
 
+  /* ── Where to stay (its own page: /stay) ────────────────────────────────── */
+  /**
+   * Hotels near each set of celebrations. Each is pinned on a map by its
+   * mapsQuery (Google Maps finds it by name), so no coordinates are needed.
+   * Listed for guests' convenience only; nothing is booked or reserved.
+   */
+  lodging: {
+    title: "Where to stay",
+    intro:
+      "Our celebrations take place in two cities, so here are a few hotels close to each. Tap a hotel to see it on the map.",
+    note: "These are suggestions only: please check rates and availability with each hotel directly, and book early.",
+    linkLabel: "Where to stay",
+    areas: [
+      {
+        city: "Bafoussam",
+        when: "Tuesday, 16 February 2027",
+        venue: { name: "Bafoussam Urban Council", mapsQuery: "Bafoussam Urban Council, Bafoussam, Cameroon" },
+        hotels: [
+          {
+            name: "Hotel Zingana",
+            description: "One of the city's best-known hotels, styled after Bamileke tradition.",
+            mapsQuery: "Hotel Zingana, Bafoussam, Cameroon",
+          },
+          {
+            name: "Mbatkam Palace",
+            description: "Hotel near the city centre with a restaurant and a bar and lounge. Boulevard Urbain Ouest, Djamena.",
+            mapsQuery: "Mbatkam Palace, Bafoussam, Cameroon",
+          },
+          {
+            name: "Guins Palace",
+            description: "Three-star hotel in the heart of Bafoussam.",
+            mapsQuery: "Guins Palace Hotel, Bafoussam, Cameroon",
+          },
+          {
+            name: "Talotel",
+            description: "Close to the city centre, on 1ère Rue Djeleng.",
+            mapsQuery: "Talotel, Bafoussam, Cameroon",
+          },
+          {
+            name: "Hôtel Altitel",
+            description: "Practical, simpler option on the Route de Bamenda, opposite Collège Tanko.",
+            mapsQuery: "Hotel Altitel, Route de Bamenda, Bafoussam, Cameroon",
+          },
+        ],
+      },
+      {
+        city: "Limbe",
+        when: "Saturday 20 and Sunday 21 February 2027",
+        venue: { name: "SS Club, Bota", mapsQuery: "SS Club, Bota, Limbe, Cameroon" },
+        hotels: [
+          {
+            name: "Bota Beach House",
+            description: "In Bota itself, the same neighbourhood as the church wedding and the reception.",
+            mapsQuery: "Bota Beach House, Bota, Limbe, Cameroon",
+          },
+          {
+            name: "Park Hotel Miramare",
+            description: "Coastal hotel beside the Limbe Botanic Garden.",
+            mapsQuery: "Park Hotel Miramare, Limbe, Cameroon",
+          },
+          {
+            name: "Atlantic Beach Hotel",
+            description: "Ocean-view rooms on Limbe's seafront.",
+            mapsQuery: "Atlantic Beach Hotel, Limbe, Cameroon",
+          },
+          {
+            name: "Fini Hotel",
+            description: "Two branches: one in town and one by the sea at Bobende, on Sonara Road, with pools.",
+            mapsQuery: "Fini Hotel, Limbe, Cameroon",
+          },
+          {
+            name: "Hotel Seme Beach",
+            description: "Beach resort with an outdoor pool at Mile 11 on the Idenau road, a short drive out of Limbe.",
+            mapsQuery: "Hotel Seme Beach, Mile 11, Limbe, Cameroon",
+          },
+        ],
+      },
+    ] satisfies {
+      city: string;
+      when: string;
+      venue: { name: string; mapsQuery: string };
+      hotels: { name: string; description: string; mapsQuery: string }[];
+    }[],
+  },
+
   /* ── Wedding party (placeholder; hidden until sections.weddingParty) ─────── */
   weddingParty: {
     heading: "Standing beside us",

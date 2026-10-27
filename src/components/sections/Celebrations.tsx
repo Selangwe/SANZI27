@@ -1,6 +1,7 @@
 "use client";
 
-import { Clock, MapPin } from "@phosphor-icons/react";
+import { Bed, Clock, MapPin } from "@phosphor-icons/react";
+import Link from "next/link";
 import { wedding } from "@/content/wedding";
 import { mapsUrl } from "@/lib/calendar";
 import { Reveal } from "../ui/Reveal";
@@ -49,6 +50,14 @@ export function Celebrations() {
           </div>
         ))}
       </div>
+
+      <Reveal className="mt-16 flex flex-col items-center text-center">
+        <p className="font-display text-xl italic text-stone">Travelling in for the celebrations?</p>
+        <Link href="/stay" className="btn btn-solid mt-5">
+          <Bed size={16} weight="light" aria-hidden="true" />
+          {wedding.lodging.linkLabel}
+        </Link>
+      </Reveal>
     </Section>
   );
 }

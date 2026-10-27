@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { wedding } from "@/content/wedding";
 import { Reveal } from "../ui/Reveal";
 
@@ -17,6 +18,12 @@ export function Footer() {
         <p className="mt-6 font-display text-lg italic text-stone">{couple.tagline}</p>
         <p className="mt-6 font-display text-lg text-stone">{event.shortDate}</p>
         <p className="mt-1 text-sm text-gold">{couple.hashtag}</p>
+        <Link
+          href="/stay"
+          className="mt-8 text-[0.66rem] font-medium uppercase tracking-[0.24em] text-gold underline decoration-gold/40 underline-offset-4 hover:decoration-gold"
+        >
+          {wedding.lodging.linkLabel}
+        </Link>
       </Reveal>
     </footer>
   );
