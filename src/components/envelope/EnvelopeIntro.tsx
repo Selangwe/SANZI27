@@ -168,6 +168,9 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.35 }}
     >
+      {/* Sage watercolour clouds drifting in from the edges */}
+      <EdgeClouds />
+
       {/* Lights down as the acrylic card comes forward */}
       <div data-dim aria-hidden="true" className="pointer-events-none absolute inset-0 bg-noir opacity-0" />
 
@@ -346,5 +349,71 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
         <InvitationCardFace />
       </div>
     </motion.div>
+  );
+}
+
+/**
+ * Sage watercolour clouds billowing in from the edges of the envelope screen,
+ * after the SANZI programme artwork. Each cluster is a heap of overlapping
+ * puffs whose outlines are roughened by turbulence and softened, so they read
+ * as painted mist. Clusters are anchored to the corners and sides with their
+ * own proportions, so they keep their shape on any screen. Static, on their
+ * own layers, so they cost nothing while the envelope animates.
+ */
+function EdgeClouds() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+      <svg width="0" height="0" className="absolute">
+        <defs>
+          <filter id="sage-wash" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="4" seed="11" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="13" xChannelSelector="R" yChannelSelector="G" result="ragged" />
+            <feGaussianBlur in="ragged" stdDeviation="2.6" />
+          </filter>
+        </defs>
+      </svg>
+      {/* bottom corners: the largest banks */}
+      <Cloud className="-bottom-[6%] -left-[18%] w-[min(95vw,620px)]" />
+      <Cloud className="-bottom-[7%] -right-[20%] w-[min(100vw,660px)]" mirror />
+      {/* top corners */}
+      <Cloud className="-left-[22%] -top-[5%] w-[min(80vw,520px)] rotate-180 opacity-80" mirror />
+      <Cloud className="-right-[26%] -top-[4%] w-[min(70vw,460px)] rotate-180 opacity-60" />
+      {/* drifting in from the sides */}
+      <Cloud className="-left-[34%] top-[38%] w-[min(62vw,420px)] rotate-90 opacity-50" />
+      <Cloud className="-right-[34%] top-[46%] w-[min(62vw,420px)] -rotate-90 opacity-50" mirror />
+    </div>
+  );
+}
+
+/** One cloud bank: a heap of puffs, darker sage at the base, paler on top. */
+function Cloud({ className = "", mirror = false }: { className?: string; mirror?: boolean }) {
+  // [cx, cy, r] puffs in a 160 × 100 box, base along the bottom edge
+  const base: [number, number, number][] = [
+    [12, 92, 30], [40, 84, 30], [70, 90, 26], [98, 88, 24], [124, 94, 22], [148, 98, 18],
+  ];
+  const billows: [number, number, number][] = [
+    [22, 66, 20], [46, 56, 22], [70, 64, 18], [90, 70, 15], [112, 76, 12], [34, 42, 13], [58, 36, 11],
+  ];
+  const highlights: [number, number, number][] = [
+    [40, 50, 10], [58, 44, 7], [24, 62, 9], [78, 66, 8],
+  ];
+  return (
+    <svg
+      viewBox="0 0 160 100"
+      className={`absolute aspect-[16/10] [will-change:transform] ${className}`}
+      style={mirror ? { scale: "-1 1" } : undefined}
+    >
+      <g filter="url(#sage-wash)">
+        {base.map(([cx, cy, r], i) => (
+          <circle key={`b${i}`} cx={cx} cy={cy} r={r} fill="#9cad8b" opacity="0.55" />
+        ))}
+        {billows.map(([cx, cy, r], i) => (
+          <circle key={`m${i}`} cx={cx} cy={cy} r={r} fill="#b4c2a3" opacity="0.6" />
+        ))}
+        {highlights.map(([cx, cy, r], i) => (
+          <circle key={`h${i}`} cx={cx} cy={cy} r={r} fill="#dfe6d3" opacity="0.4" />
+        ))}
+      </g>
+    </svg>
   );
 }

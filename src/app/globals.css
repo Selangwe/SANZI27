@@ -379,16 +379,18 @@
   }
 
   /* Gold foil: metallic gradient clipped to the type */
+  /* Gold foil: the warm, deep metallic gold of the SANZI2027 programme
+     lettering, lit from above (pale highlight at the top of each line,
+     bronze shadow below) */
   .foil {
     background-image: linear-gradient(
-      100deg,
-      #9a773a 0%,
-      #e6c97f 20%,
-      #fff0be 32%,
-      #c69c4e 46%,
-      #efd590 64%,
-      #a37e3c 82%,
-      #e0c27a 100%
+      172deg,
+      #f8e3a3 0%,
+      #e9bf66 28%,
+      #c88d36 50%,
+      #a7681f 62%,
+      #e3b25c 80%,
+      #8c5a1b 100%
     );
     -webkit-background-clip: text;
     background-clip: text;

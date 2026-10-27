@@ -50,13 +50,13 @@ export function Crest({
   return (
     <svg viewBox="0 0 200 140" className={`overflow-visible ${className}`} aria-hidden="true">
       <defs>
-        <linearGradient id={gold} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#8a6a2e" />
-          <stop offset="0.28" stopColor="#e8cd86" />
-          <stop offset="0.42" stopColor="#fff2c4" />
-          <stop offset="0.56" stopColor="#c39a4b" />
-          <stop offset="0.78" stopColor="#f0d792" />
-          <stop offset="1" stopColor="#8d6a2b" />
+        <linearGradient id={gold} x1="0" y1="0" x2="0.35" y2="1">
+          <stop offset="0" stopColor="#f8e3a3" />
+          <stop offset="0.28" stopColor="#e9bf66" />
+          <stop offset="0.5" stopColor="#c88d36" />
+          <stop offset="0.62" stopColor="#a7681f" />
+          <stop offset="0.8" stopColor="#e3b25c" />
+          <stop offset="1" stopColor="#8c5a1b" />
         </linearGradient>
         {mirror && (
           <filter id={shade} x="-20%" y="-30%" width="140%" height="170%">
