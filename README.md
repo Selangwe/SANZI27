@@ -60,24 +60,41 @@ z10  inside panel (CSS)     the envelope's inside, seen once the flap opens
 `paper-grain.png` a small grain tile. Both are pre-rendered so nothing heavy is
 drawn live while the envelope animates.
 
-The invitation card is laid out in code (`InvitationCardFace.tsx`): torn paper,
-twine bow and a dried-flower sprig. Its wording comes from `card` in
-`wedding.ts`. On phones it stretches to fill almost the whole screen.
+The invitation card is laid out in code. `card.style` in `wedding.ts` picks one
+of two faces:
+
+- **`acrylic`** (default, `suite/AcrylicCard.tsx`): smoked clear acrylic with
+  gold-foil type and a gold filigree crest around the couple's initials
+  (`couple.monogramLetters`, "SZ" to match the wax seal). It follows the black
+  tri-fold acrylic suite reference: parents, request lines, names in script
+  (`inviteName`), the date written out, venue in script, then the address.
+  Wording is in `card.acrylic`. To use real crest artwork, drop a transparent
+  PNG (about 10:7) at `public/invitation/crest.png`.
+- **`paper`** (`InvitationCardFace.tsx`): torn deckle-edged paper, a twine bow
+  and a dried-flower sprig, with wording from the rest of `card`.
+
+On phones either card stretches to fill almost the whole screen.
 
 If the envelope artwork changes, re-cut the layers and update the `BODY`,
 `FLAP`, `SEAL` and `FLAP_OUTLINE` constants (artwork pixels) at the top of
 `src/components/envelope/EnvelopeIntro.tsx`.
 
 **Opening sequence** (`EnvelopeIntro.tsx`, `open()`), with the steps overlapping
-so it flows (about 2.5 s in all):
+so it flows (about 2.5 s in all, plus about 1.6 s for the acrylic card's extra
+steps):
 
-1. The seal lifts, scales to 1.15 and fades (0.45 s).
+1. The seal catches the light (a quick glint), then lifts, scales to 1.15 and
+   fades (0.45 s).
 2. 0.3 s in, the flap rotates `rotateX 0 → 180°` about its top edge inside a
    `perspective: 1400px` container (0.8 s), swinging toward the viewer and
    folding back point-up. Edge-on it drops behind the card.
 3. Before the flap has settled, the card slides up out of the pocket while the
    envelope sinks (0.95 s).
-4. The card grows to fill the screen (0.85 s; almost edge to edge on phones).
+4. Acrylic card only: it tilts toward the viewer in 3D while a band of light
+   sweeps across it, like light catching the acrylic (1.2 s).
+5. The card grows to fill the screen (0.85 s; almost edge to edge on phones).
+   For the acrylic card the room dims to near black at the same time, and on
+   the full-screen card the light sweeps across again every few seconds.
    Scrolling then unlocks and the page continues below it.
 When the guest's device asks for reduced motion, the same sequence plays at
 well under half the duration.

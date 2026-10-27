@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion, useAnimate, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { wedding } from "@/content/wedding";
 import { InvitationCardFace } from "../envelope/InvitationCardFace";
 import { ImageSlot } from "../ui/ImageSlot";
@@ -17,11 +17,24 @@ export function OpeningCover({ revealed }: { revealed: boolean }) {
   const reduce = useReducedMotion();
   const cardScale = useTransform(scrollYProgress, [0, 1], reduce ? [1, 1] : [1, 0.9]);
   const cardShade = useTransform(scrollYProgress, [0, 1], [0, 0.55]);
+  const acrylic = wedding.card.style === "acrylic";
+  const [cardScope, animate] = useAnimate();
+
+  // Every few seconds, light catches the acrylic card.
+  useEffect(() => {
+    if (!acrylic || !revealed || reduce) return;
+    const controls = animate(
+      "[data-glare]",
+      { x: ["-70%", "70%"] },
+      { duration: 1.8, ease: [0.45, 0, 0.25, 1], delay: 0.8, repeat: Infinity, repeatDelay: 6 },
+    );
+    return () => controls.stop();
+  }, [acrylic, animate, reduce, revealed]);
 
   return (
     <div ref={ref} className="relative">
-      <div className="paper sticky top-0 h-[100dvh] overflow-hidden">
-        <motion.div className="absolute" style={{ inset: "var(--card-margin)", scale: cardScale }}>
+      <div className={`sticky top-0 h-[100dvh] overflow-hidden ${acrylic ? "bg-noir" : "paper"}`}>
+        <motion.div ref={cardScope} className="absolute" style={{ inset: "var(--card-margin)", scale: cardScale }}>
           <InvitationCardFace />
         </motion.div>
         <motion.div className="absolute inset-0 bg-ink" style={{ opacity: cardShade }} />

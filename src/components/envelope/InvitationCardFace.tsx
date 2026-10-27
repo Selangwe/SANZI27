@@ -1,9 +1,13 @@
 "use client";
 
 import { wedding } from "@/content/wedding";
+import { AcrylicCard } from "../suite/AcrylicCard";
 
 /**
- * The invitation card: handmade deckle-edged paper, a twine bow over the top
+ * The invitation card. card.style in wedding.ts picks the face: the smoked
+ * acrylic card (see suite/AcrylicCard) or the paper card below.
+ *
+ * Paper card: handmade deckle-edged paper, a twine bow over the top
  * right corner and a sprig of dried gypsophila down the right side, after the
  * client's reference card. Wording comes from wedding.ts.
  *
@@ -17,9 +21,7 @@ import { wedding } from "@/content/wedding";
 export function InvitationCardFace() {
   return (
     <div className="absolute inset-0 flex items-center justify-center" style={{ containerType: "size" }}>
-      <div className="ic">
-        <Card />
-      </div>
+      <div className="ic">{wedding.card.style === "acrylic" ? <AcrylicCard /> : <Card />}</div>
     </div>
   );
 }

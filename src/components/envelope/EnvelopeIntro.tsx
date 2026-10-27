@@ -45,11 +45,14 @@ const polygon = (mirror: boolean) =>
  *   z 15  card           tucked inside, slides up and out
  *   z 10  inside panel   the envelope's inside, seen once the flap is open
  *
- * Sequence on tap (steps overlap so it flows): seal lifts + fades → flap swings
- * open toward the viewer in 3D → card slides up out of the pocket → card grows
- * to fill the screen → onComplete() unlocks scrolling.
+ * Sequence on tap (steps overlap so it flows): seal glints, lifts + fades →
+ * flap swings open toward the viewer in 3D → card slides up out of the pocket
+ * → (acrylic card) it tilts toward the light as a glare sweeps across it →
+ * the room dims and the card grows to fill the screen → onComplete() unlocks
+ * scrolling.
  */
 export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
+  const acrylic = wedding.card.style === "acrylic";
   const reduceMotion = useReducedMotion();
   const [scope, animate] = useAnimate();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -73,7 +76,14 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
     const speed = reduceMotion ? 0.4 : 1;
     const d = (s: number) => s * speed;
 
-    // 1. Wax seal lifts, grows slightly and fades away.
+    // 1. The gold seal catches the light, then lifts, grows slightly and fades away.
+    if (!reduceMotion) {
+      await animate(
+        "[data-seal]",
+        { scale: [1, 1.06, 1], filter: ["brightness(1)", "brightness(1.35)", "brightness(1)"] },
+        { duration: 0.45, ease: "easeInOut" },
+      );
+    }
     animate("[data-seal]", { y: -36, scale: 1.15, opacity: 0 }, { duration: d(0.45), ease: [0.4, 0, 0.2, 1] });
     await sleep(d(300));
 
@@ -89,6 +99,12 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
     animate("[data-envelope]", { y: "34%" }, { duration: d(0.95), ease: LUXE });
     await animate("[data-card]", { y: "-104%" }, { duration: d(0.95), ease: LUXE });
 
+    // 3b. Acrylic card: it tilts toward the viewer while light sweeps across it.
+    if (acrylic && !reduceMotion) {
+      animate("[data-card] [data-glare]", { x: ["-70%", "70%"] }, { duration: 1.1, ease: [0.45, 0, 0.25, 1] });
+      await animate("[data-card]", { rotateY: [0, -12, 0], rotateX: [0, 5, 0] }, { duration: 1.2, ease: "easeInOut" });
+    }
+
     // 4. Card expands to fill the screen. The full-size copy is already mounted
     //    (hidden), so this step only swaps visibility and animates its box.
     const r = cardRef.current?.getBoundingClientRect();
@@ -96,9 +112,10 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
     await animate("[data-expand]", { ...from, visibility: "visible" }, { duration: 0 });
     animate("[data-card]", { opacity: 0 }, { duration: 0 });
     animate("[data-envelope]", { opacity: 0, y: "60%" }, { duration: d(0.6), ease: "easeIn" });
+    if (acrylic) animate("[data-dim]", { opacity: 1 }, { duration: d(0.85), ease: "easeInOut" });
     await animate("[data-expand]", cardRestingRect(innerWidth, innerHeight), { duration: d(0.85), ease: LUXE });
     onComplete();
-  }, [animate, phase, ready, reduceMotion, onComplete]);
+  }, [acrylic, animate, phase, ready, reduceMotion, onComplete]);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -119,6 +136,9 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.35 }}
     >
+      {/* Lights down as the acrylic card comes forward */}
+      <div data-dim aria-hidden="true" className="pointer-events-none absolute inset-0 bg-noir opacity-0" />
+
       {/* Soft vignette */}
       <div
         aria-hidden="true"
@@ -186,7 +206,13 @@ export function EnvelopeIntro({ onComplete }: { onComplete: () => void }) {
               above the envelope's bottom edge. */}
           <div
             className="pointer-events-none absolute inset-0 z-[15]"
-            style={{ clipPath: `inset(-400% -100% ${pct(ART.h - BODY.bottom, ART.h)} -100%)` }}
+            style={{
+              // a few px above the paper's bottom edge, which is soft in the artwork
+              clipPath: `inset(-400% -100% ${pct(ART.h - BODY.bottom + 8, ART.h)} -100%)`,
+              // 3D for the card's tilt, centred on where the card is once it is out
+              perspective: 1400,
+              perspectiveOrigin: "50% -25%",
+            }}
           >
             <div
               ref={cardRef}

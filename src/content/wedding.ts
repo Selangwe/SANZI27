@@ -26,17 +26,22 @@ export const wedding = {
     partnerOne: {
       firstName: "Eleanor",
       fullName: "Eleanor Grace Whitmore",
+      /** Name as printed on the acrylic card (first + middle) */
+      inviteName: "Eleanor Grace",
       parents: "Mr. & Mrs. Robert Whitmore",
       relation: "Daughter of",
     },
     partnerTwo: {
       firstName: "James",
       fullName: "James Alexander Hart",
+      inviteName: "James Alexander",
       parents: "Mr. & Mrs. William Hart",
       relation: "Son of",
     },
     /** Used on the wax-seal fallback and footer */
     monogram: "E & J",
+    /** Initials inside the gold crest on the acrylic card (matches the SZ wax seal) */
+    monogramLetters: "SZ",
     hashtag: "#EleanorAndJames",
   },
 
@@ -52,6 +57,7 @@ export const wedding = {
     displayDateFormal: "Saturday, the twelfth of June",
     displayYearFormal: "Two thousand and twenty-seven",
     displayTime: "3:00 in the afternoon",
+    displayTimeFormal: "At three o'clock in the afternoon",
     shortDate: "12 June 2027",
     calendarTitle: "Eleanor & James: Wedding",
   },
@@ -90,6 +96,24 @@ export const wedding = {
 
   /* ── The invitation card inside the envelope ────────────────────────────── */
   card: {
+    /**
+     * "acrylic" — smoked clear acrylic with gold-foil type and a gold crest,
+     *             after the black tri-fold acrylic suite reference
+     * "paper"   — deckle-edged paper with twine and dried gypsophila
+     */
+    style: "acrylic" as "acrylic" | "paper",
+
+    /** Wording for the acrylic card */
+    acrylic: {
+      /** Line between the two sets of parents */
+      joiner: "together with",
+      request: ["request the honor of your presence", "at the marriage of their children"],
+      and: "and",
+      /** Optional crest artwork (transparent PNG, about 10:7); a drawn gold crest is used until it exists */
+      crestImage: "/invitation/crest.png",
+    },
+
+    /* Wording for the paper card */
     /** Optional opening line; leave quote "" to hide it */
     quote: "Two are better than one, for if either of them falls, one can help the other up.",
     quoteCite: "Ecclesiastes 4:9-10",
