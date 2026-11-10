@@ -329,7 +329,7 @@ export const wedding = {
             events: [
               {
                 id: "bbq",
-                name: "BBQ & Live Bang Music",
+                name: "BBQ & Live Band Music",
                 venue: "Sokoto Aminatou Square",
                 time: "",
                 start: "",

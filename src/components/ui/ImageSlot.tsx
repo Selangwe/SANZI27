@@ -72,7 +72,7 @@ function Placeholder({
       className={`absolute inset-0 flex flex-col items-center gap-3 p-4 text-center ${
         labelAt === "top" ? "justify-start pt-[max(4rem,12dvh)]" : "justify-center"
       } ${
-        dark ? "bg-[#3b342c] text-[#e9dfcf]" : "bg-linen text-stone"
+        dark ? "bg-[#2f352c] text-[#e6e4d6]" : "bg-linen text-stone"
       }`}
       style={{
         backgroundImage: dark

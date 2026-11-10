@@ -1,24 +1,29 @@
 @import "tailwindcss";
 
 /* ── Design tokens ──────────────────────────────────────────────────────────
-   Warm desert-linen palette with terracotta accents. Change these to
-   re-theme the whole site. Text tokens (taupe, stone, gold) are tuned to
-   pass WCAG AA 4.5:1 on cream and linen, so small labels stay readable. ("gold" is the accent colour used for eyebrows,
-   ornaments and highlights; "cocoa" fills the solid buttons.) */
+   Sage, antique gold and ivory, taken from the couple's programme artwork:
+   soft green leaves over warm off-white paper, gold for every ornament, and
+   a deep forest green where the old palette used near-black brown. Change
+   these to re-theme the whole site. Text tokens (taupe, stone, gold) are
+   tuned to pass WCAG AA 4.5:1 on cream, ivory and linen, so small labels
+   stay readable. ("gold" is the accent colour used for eyebrows, ornaments
+   and highlights; "cocoa" fills the solid buttons and is now a deep sage.) */
 @theme {
-  --color-cream: #f1e9de;
+  --color-cream: #f2efe6;
   /* Backdrop behind the acrylic card once the lights go down */
   --color-noir: #0e0e0f;
-  --color-ivory: #f8f3ec;
-  --color-linen: #e9dfd2;
-  --color-sand: #dccfbe;
-  --color-taupe: #716050;
-  --color-stone: #665649;
-  --color-ink: #3a2b22;
-  --color-gold: #93512f;
-  --color-gold-soft: #d0a58e;
-  --color-cocoa: #7a4b37;
-  --color-backdrop: #b9ad9d;
+  --color-ivory: #faf8f2;
+  --color-linen: #e7e5d8;
+  --color-sand: #d3d6c4;
+  --color-taupe: #58634f;
+  --color-stone: #4d5a46;
+  --color-ink: #2b3a2b;
+  --color-gold: #7a5c20;
+  --color-gold-soft: #c7a95f;
+  --color-cocoa: #45543d;
+  --color-backdrop: #a8b096;
+  /* The couple's sage, the same green the dress code asks guests for */
+  --color-sage: #9caf88;
   --color-wax: #7e2a2a;
 
   --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
@@ -75,15 +80,15 @@
     border: 1px solid color-mix(in srgb, var(--color-sand) 75%, transparent);
     border-radius: 1rem;
     background: var(--color-ivory);
-    box-shadow: 0 10px 30px -18px rgba(74, 52, 36, 0.35);
+    box-shadow: 0 10px 30px -18px rgba(43, 58, 43, 0.32);
   }
 
   /* Subtle paper grain, layered on cream backgrounds */
   .paper {
     background-color: var(--color-cream);
     background-image:
-      radial-gradient(rgba(122, 109, 92, 0.05) 1px, transparent 1px),
-      radial-gradient(rgba(122, 109, 92, 0.035) 1px, transparent 1px);
+      radial-gradient(rgba(92, 104, 86, 0.055) 1px, transparent 1px),
+      radial-gradient(rgba(92, 104, 86, 0.04) 1px, transparent 1px);
     background-size: 3px 3px, 7px 7px;
     background-position: 0 0, 1px 2px;
   }
@@ -118,7 +123,7 @@
       border: 1px solid color-mix(in srgb, var(--color-sand) 75%, transparent);
       border-radius: 1rem;
       background: var(--color-ivory);
-      box-shadow: 0 10px 30px -18px rgba(74, 52, 36, 0.35);
+      box-shadow: 0 10px 30px -18px rgba(43, 58, 43, 0.32);
     }
   }
 
