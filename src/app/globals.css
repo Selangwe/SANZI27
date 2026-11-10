@@ -88,6 +88,59 @@
     background-position: 0 0, 1px 2px;
   }
 
+  /* ── Programme canvas ─────────────────────────────────────────────────────
+     A horizontally scrolled row of programme cards. The right padding is
+     deliberately narrower than a card, so the next card is cut off by the
+     edge of the screen and reads as "there is more to swipe". */
+  .prog-track {
+    scroll-snap-type: x proximity;
+    scroll-behavior: smooth;
+    padding-left: max(1.5rem, calc((100vw - 72rem) / 2));
+    padding-right: 1.5rem;
+    scroll-padding-left: max(1.5rem, calc((100vw - 72rem) / 2));
+  }
+
+  /* Two programmes sharing one card (Civil | Traditional). On phones the group
+     dissolves (display: contents) and each part becomes its own card slide;
+     from md up it is the single outer card the sketch draws, with the divider
+     between the halves inset from that border. */
+  .prog-group {
+    display: contents;
+  }
+  @media (width >= 48rem) {
+    .prog-group {
+      position: relative;
+      display: flex;
+      width: min(72rem, 86vw);
+      flex-shrink: 0;
+      overflow: hidden;
+      scroll-snap-align: start;
+      border: 1px solid color-mix(in srgb, var(--color-sand) 75%, transparent);
+      border-radius: 1rem;
+      background: var(--color-ivory);
+      box-shadow: 0 10px 30px -18px rgba(74, 52, 36, 0.35);
+    }
+  }
+
+  /* Cards fade out of, and back into, the canvas at its edges */
+  .prog-mask {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 3rem, #000 calc(100% - 5rem), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 3rem, #000 calc(100% - 5rem), transparent 100%);
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .prog-track {
+      scroll-behavior: auto;
+    }
+  }
+
   .btn {
     display: inline-flex;
     align-items: center;

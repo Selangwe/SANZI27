@@ -22,6 +22,21 @@ export type ImageAsset = {
   label: string;
 };
 
+/** One wedding's running order, as shown on a programme card. */
+export type ProgrammePart = {
+  title: string;
+  date: string;
+  place?: string;
+  /** Shown above the running order, for anything not yet pinned to a time */
+  note?: { label: string; detail: string };
+  itemsLabel?: string;
+  items: {
+    time: string;
+    label: string;
+    icon: "court" | "camera" | "toast" | "break" | "welcome" | "drum" | "church" | "meal" | "tour" | "entrance";
+  }[];
+};
+
 export const wedding = {
   /* ── Which sections are shown ───────────────────────────────────────────── */
   /** Sections still waiting on real content stay hidden until switched on. */
@@ -349,33 +364,60 @@ export const wedding = {
     }[],
   },
 
-  /* ── 7. Day programme ───────────────────────────────────────────────────── */
+  /* ── 7. Day programmes ──────────────────────────────────────────────────── */
+  /**
+   * The canvas of programme cards. Each group is one card; a group with two
+   * parts shares a single outer card split by a divider (Civil | Traditional),
+   * which is how the client's sketch draws the Bafoussam day.
+   */
   programme: {
-    heading: "Wedding programme",
-    subheading: "Civil & Traditional Wedding",
-    date: "Tuesday, 16 February 2027",
-    place: "Bafoussam, Cameroon",
-    parts: [
+    heading: "Wedding Programmes",
+    groups: [
       {
-        title: "Civil Wedding",
-        items: [
-          { time: "1:30 PM – 2:30 PM", label: "Court Wedding Ceremony", icon: "court" },
-          { time: "2:30 PM – 3:30 PM", label: "Wedding Picture Session", icon: "camera" },
-          { time: "3:30 PM – 4:30 PM", label: "Light Reception & Refreshments", icon: "toast" },
-          { time: "4:30 PM – 5:30 PM", label: "Short Break & Preparation for Traditional Wedding", icon: "break" },
+        id: "bafoussam",
+        parts: [
+          {
+            title: "Civil Wedding",
+            date: "Tuesday, 16 February 2027",
+            place: "Bafoussam, Cameroon",
+            items: [
+              { time: "1:30 PM – 2:30 PM", label: "Court Wedding Ceremony", icon: "court" },
+              { time: "2:30 PM – 3:30 PM", label: "Wedding Picture Session", icon: "camera" },
+              { time: "3:30 PM – 4:30 PM", label: "Light Reception & Refreshments", icon: "toast" },
+              { time: "4:30 PM – 5:30 PM", label: "Short Break & Preparation for Traditional Wedding", icon: "break" },
+            ],
+          },
+          {
+            title: "Traditional Wedding",
+            date: "Tuesday, 16 February 2027",
+            items: [
+              { time: "6:30 PM – 7:30 PM", label: "Arrival & Welcome of Guests", icon: "welcome" },
+              { time: "7:30 PM onwards", label: "Official Start of Traditional Wedding Activities", icon: "drum" },
+            ],
+          },
         ],
       },
       {
-        title: "Traditional Wedding",
-        items: [
-          { time: "6:30 PM – 7:30 PM", label: "Arrival & Welcome of Guests", icon: "welcome" },
-          { time: "7:30 PM onwards", label: "Official Start of Traditional Wedding Activities", icon: "drum" },
+        id: "limbe",
+        parts: [
+          {
+            title: "Church Wedding",
+            date: "Saturday, 20 February 2027",
+            place: "Limbe, Cameroon",
+            /** Shown above the running order, for anything not yet pinned to a time */
+            note: { label: "Pre-Wedding Photoshoot", detail: "Time and location to be confirmed" },
+            itemsLabel: "Wedding Day Programme",
+            items: [
+              { time: "10:30 AM – 12:30 PM", label: "Church Service", icon: "church" },
+              { time: "12:30 PM – 1:30 PM", label: "Buffet Lunch & Picture Session", icon: "meal" },
+              { time: "1:30 PM – 2:30 PM", label: "Town Tour", icon: "tour" },
+              { time: "3:30 PM – 5:30 PM", label: "Wedding Photoshoot", icon: "camera" },
+              { time: "6:30 PM – 7:30 PM", label: "Grand Entrance at the Reception Hall", icon: "entrance" },
+            ],
+          },
         ],
       },
-    ] satisfies {
-      title: string;
-      items: { time: string; label: string; icon: "court" | "camera" | "toast" | "break" | "welcome" | "drum" }[];
-    }[],
+    ] as { id: string; parts: ProgrammePart[] }[],
   },
 
   /* ── Where to stay (its own page: /stay) ────────────────────────────────── */
