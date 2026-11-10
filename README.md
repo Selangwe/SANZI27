@@ -1,8 +1,13 @@
 # Animated Wedding Invitation
 
-A mobile-first, single-page wedding invitation. It opens with a layered envelope,
-then scrolls through the cover, families, invitation, story, countdown, wedding
-party, RSVP, venue, gifts and FAQ sections.
+A mobile-first, single-page wedding invitation for Sandra & Arnold (SANZI27),
+across five days in Bafoussam and Limbe, Cameroon. It opens with a layered
+envelope, then scrolls through the cover, families, invitation, story,
+countdown, celebrations, programmes, RSVP and footer.
+
+Three further sections — wedding party, gifts and FAQ — are built but hidden
+until their content arrives. Switch them on in `sections` at the top of
+`src/content/wedding.ts`.
 
 **Stack:** Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · Framer Motion · TypeScript
 
@@ -23,6 +28,20 @@ npm run typecheck
 | Photos                               | drop files into `public/images/`        |
 | Envelope artwork                     | drop 4 PNGs into `public/envelope/`     |
 | Colours and fonts                    | `src/app/globals.css` (`@theme`) and `src/app/layout.tsx` |
+
+### Colours
+
+Sage, antique gold and ivory, taken from the couple's programme artwork. Every
+colour comes from a token in the `@theme` block at the top of `globals.css`, so
+changing one there re-themes the whole site — `ink` is the deep forest green
+used for headings, `gold` every ornament and eyebrow, `cocoa` the solid button
+fill, `sand` the borders.
+
+**Before changing a text token, check its contrast.** `taupe`, `stone` and
+`gold` are used for small labels and are kept at WCAG AA (4.5:1) against
+`cream`, `ivory` and `linen`; `gold` has the least headroom at 4.91:1 on linen,
+so it is the one to measure. The envelope and invitation card are deliberately
+black and gold and do not follow these tokens.
 
 All copy is placeholder. Every image path is listed in `src/content/wedding.ts`.
 **If an image file is missing, the site shows a labeled placeholder** that names
@@ -96,6 +115,45 @@ still moving and nothing changes direction, so it reads as a single gesture:
 
 When the guest's device asks for reduced motion, the tilt and glare are
 skipped and the rest plays at well under half the duration.
+
+---
+
+## Wedding programmes
+
+The running orders are a horizontal canvas of cards, not a vertical timeline.
+The track is wider than the screen on purpose: the next card is cut off at the
+edge and fades out there, so it reads as "swipe for more". Dots and, on
+desktop, arrows sit underneath.
+
+Edit `programme.groups` in `wedding.ts`. **One group is one card**, and a group
+with two parts is a single card split by an inset divider — that is how Civil
+and Traditional share the Bafoussam day in the couple's sketch. On phones a
+two-part group dissolves and each part becomes its own slide. The dots count
+cards, not parts, so the four programmes show as three dots.
+
+```ts
+{
+  id: "limbe",
+  parts: [{
+    title: "Church Wedding",
+    date: "Saturday, 20 February 2027",
+    place: "Limbe, Cameroon",
+    note: { label: "…", detail: "…" },   // optional, sits above the running order
+    itemsLabel: "Wedding Day Programme", // optional heading for the list
+    items: [{ time: "10:30 AM – 12:30 PM", label: "Church Service", icon: "church" }],
+  }],
+}
+```
+
+`time` is optional — **leave it off rather than inventing an hour.** The label
+then centres against its icon instead of hanging under an empty slot, which is
+how the BBQ card reads while its times are unconfirmed. Pair that with `note`
+to say when the times will be known.
+
+To use a new icon, add its name to the `icon` union in the `ProgrammePart` type
+(same file) and map it to a [Phosphor](https://phosphoricons.com) icon in
+`ICONS` at the top of `src/components/sections/Programme.tsx`. TypeScript will
+point at the map if you forget.
 
 ---
 
