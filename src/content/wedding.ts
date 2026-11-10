@@ -31,9 +31,22 @@ export type ProgrammePart = {
   note?: { label: string; detail: string };
   itemsLabel?: string;
   items: {
-    time: string;
+    /** Left off when the hour is not settled yet, as for the BBQ */
+    time?: string;
     label: string;
-    icon: "court" | "camera" | "toast" | "break" | "welcome" | "drum" | "church" | "meal" | "tour" | "entrance";
+    icon:
+      | "court"
+      | "camera"
+      | "toast"
+      | "break"
+      | "welcome"
+      | "drum"
+      | "church"
+      | "meal"
+      | "tour"
+      | "entrance"
+      | "grill"
+      | "band";
   }[];
 };
 
@@ -413,6 +426,21 @@ export const wedding = {
               { time: "1:30 PM – 2:30 PM", label: "Town Tour", icon: "tour" },
               { time: "3:30 PM – 5:30 PM", label: "Wedding Photoshoot", icon: "camera" },
               { time: "6:30 PM – 7:30 PM", label: "Grand Entrance at the Reception Hall", icon: "entrance" },
+            ],
+          },
+        ],
+      },
+      {
+        id: "bbq",
+        parts: [
+          {
+            title: "BBQ & Live Band",
+            date: "Sunday, 21 February 2027",
+            place: "Sokoto Aminatou Square, Limbe",
+            note: { label: "Exact times to be confirmed", detail: "The couple will share them closer to the wedding" },
+            items: [
+              { label: "Barbecue", icon: "grill" },
+              { label: "Live Band Music", icon: "band" },
             ],
           },
         ],

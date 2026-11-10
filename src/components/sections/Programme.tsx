@@ -9,7 +9,9 @@ import {
   Champagne,
   Church,
   Confetti,
+  Fire,
   ForkKnife,
+  Guitar,
   HandWaving,
   Hourglass,
   MusicNotes,
@@ -34,6 +36,8 @@ const ICONS: Record<Part["items"][number]["icon"], Icon> = {
   meal: ForkKnife,
   tour: Car,
   entrance: Confetti,
+  grill: Fire,
+  band: Guitar,
 };
 
 /**
@@ -251,8 +255,11 @@ function Panel({
                 <ItemIcon size={17} weight="light" aria-hidden="true" />
               </span>
               <div>
-                <p className="text-[0.66rem] font-medium uppercase tracking-[0.2em] text-taupe">{item.time}</p>
-                <p className="mt-1 text-[1rem] leading-snug text-ink">{item.label}</p>
+                {item.time && (
+                  <p className="text-[0.66rem] font-medium uppercase tracking-[0.2em] text-taupe">{item.time}</p>
+                )}
+                {/* Untimed entries sit level with the icon instead of under a time */}
+                <p className={(item.time ? "mt-1 " : "pt-2 ") + "text-[1rem] leading-snug text-ink"}>{item.label}</p>
               </div>
             </li>
           );
