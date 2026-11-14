@@ -660,10 +660,13 @@ export const wedding = {
    *   1. Make a free account at cloudinary.com and copy the "Cloud name".
    *   2. Settings → Upload → Add upload preset → Signing mode: Unsigned.
    *      Copy the preset name.
-   *   3. Settings → Security → Restricted image types → make sure
-   *      "Resource list" is UNTICKED. That panel lists what is blocked, and it
-   *      is ticked by default, which stops the site reading the list of photos
-   *      for the tag below.
+   *   3. Settings → API Keys → copy the API Key and API Secret, and set them
+   *      as CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET on the deployment
+   *      (Vercel → Settings → Environment Variables) and in .env.local. They
+   *      stay on the server and let the site read everyone's photos.
+   *      (Without them the site falls back to Cloudinary's public tag
+   *      listing, which only works if "Resource list" is unticked under
+   *      Settings → Security → Restricted image types.)
    *   4. Paste both below. Until then the section shows its empty state and
    *      explains that uploads are not configured yet.
    */

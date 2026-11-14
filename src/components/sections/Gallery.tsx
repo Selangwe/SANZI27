@@ -204,10 +204,9 @@ export function Gallery() {
         {configured && !listable && (
           <Reveal className="card mx-auto mt-6 max-w-xl px-6 py-6 text-center">
             <p className="text-sm leading-relaxed text-stone">
-              Photos are uploading, but each guest can only see their own so far. In Cloudinary, go to{" "}
-              <strong className="font-medium text-ink">Settings → Security → Restricted image types</strong> and{" "}
-              <strong className="font-medium text-ink">untick “Resource list”</strong> — that panel lists what is
-              blocked, so a tick there is what stops the site reading the shared gallery.
+              Photos are uploading, but each guest can only see their own so far. Add{" "}
+              <code>CLOUDINARY_API_KEY</code> and <code>CLOUDINARY_API_SECRET</code> to the deployment&apos;s
+              environment variables (Cloudinary → Settings → API Keys), which lets the site read the shared gallery.
             </p>
           </Reveal>
         )}

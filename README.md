@@ -217,11 +217,17 @@ To switch it on, fill in `gallery.cloudName` and `gallery.uploadPreset` in
    **Cloud name** from the dashboard.
 2. **Settings → Upload → Add upload preset**, set *Signing mode* to
    **Unsigned**, and copy the preset name.
-3. **Settings → Security → Restricted image types →** make sure
-   **Resource list** is **unticked**. That panel is a list of *restrictions*, so
-   a tick there blocks the site from reading the photos carrying `gallery.tag` —
-   and it is ticked by default on a new account. Unticking it is what turns the
-   shared gallery on.
+3. **Settings → API Keys →** copy the **API Key** and **API Secret**, and set
+   them as `CLOUDINARY_API_KEY` and `CLOUDINARY_API_SECRET` in Vercel →
+   Settings → Environment Variables (and in `.env.local` for local work). They
+   are read only on the server and never reach the browser. This is what lets
+   the site list everyone's photos.
+
+   Without them the site falls back to Cloudinary's public tag listing, which
+   needs **Resource list** *unticked* under Settings → Security → **Restricted
+   image types** — a panel of *restrictions*, ticked by default, and an
+   account-wide switch that also makes every tag on the account world-readable.
+   The API keys are the better route.
 
 Until both values are filled in, the section shows its empty state and says so,
 rather than failing silently. Photos are not moderated — anything a guest adds
