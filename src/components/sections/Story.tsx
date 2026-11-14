@@ -46,7 +46,7 @@ function Chapter({
   return (
     <article className="grid items-start gap-10 md:grid-cols-2 md:gap-16">
       <Reveal className={`relative mx-auto w-full max-w-sm ${flip ? "md:order-2" : ""}`}>
-        <div className="relative aspect-[4/5] overflow-hidden rounded-2xl shadow-[0_24px_50px_-30px_rgba(60,40,25,0.55)]">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-2xl shadow-[0_24px_50px_-30px_rgba(18,20,19,0.38)]">
           <ImageSlot image={image} sizes="(max-width: 768px) 90vw, 400px" />
         </div>
       </Reveal>

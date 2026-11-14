@@ -13,6 +13,7 @@ import { WeddingParty } from "./sections/WeddingParty";
 import { Rsvp } from "./sections/Rsvp";
 import { Celebrations } from "./sections/Celebrations";
 import { Programme } from "./sections/Programme";
+import { Gallery } from "./sections/Gallery";
 import { Gifts } from "./sections/Gifts";
 import { Faq } from "./sections/Faq";
 import { Footer } from "./sections/Footer";
@@ -62,6 +63,7 @@ export function InvitationExperience() {
         <Countdown />
         <Celebrations />
         <Programme />
+        {wedding.sections.gallery && <Gallery />}
         {wedding.sections.weddingParty && <WeddingParty />}
         <Rsvp />
         {wedding.sections.gifts && <Gifts />}

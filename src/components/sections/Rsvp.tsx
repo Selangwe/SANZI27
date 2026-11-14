@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { wedding } from "@/content/wedding";
 import { readLocal, writeLocal } from "@/lib/storage";
+import { waLink } from "@/lib/whatsapp";
 import { Reveal } from "../ui/Reveal";
 import { Section } from "../ui/Section";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -173,7 +174,7 @@ function ChoiceButton({
       aria-pressed={active}
       className={`flex min-h-16 items-center justify-center gap-3 rounded-lg border px-4 text-[0.68rem] font-medium uppercase tracking-[0.2em] transition-colors duration-300 ${
         active
-          ? "border-cocoa bg-cocoa text-ivory shadow-[0_8px_20px_-10px_rgba(90,52,34,0.7)]"
+          ? "border-cocoa bg-cocoa text-ivory shadow-[0_8px_20px_-10px_rgba(18,20,19,0.45)]"
           : "border-sand bg-ivory text-ink hover:border-stone"
       }`}
     >
@@ -206,14 +207,13 @@ function whatsappLink(r: {
   message: string;
 }) {
   const { rsvp, couple } = wedding;
-  const lines = [
+  return waLink(rsvp.whatsapp, [
     `RSVP · ${couple.weddingName}\n`,
     `Name: ${r.name}`,
     `Reply: ${r.attending ? rsvp.acceptLabel : rsvp.declineLabel}`,
-    r.attending ? `Guests (incl. me): ${r.guests}` : "",
-    r.attending && r.dietary ? `Dietary: ${r.dietary}` : "",
-    r.email ? `Email: ${r.email}` : "",
-    r.message ? `\nNote: ${r.message}` : "",
-  ].filter(Boolean);
-  return `https://wa.me/${rsvp.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`;
+    r.attending && `Guests (incl. me): ${r.guests}`,
+    r.attending && r.dietary && `Dietary: ${r.dietary}`,
+    r.email && `Email: ${r.email}`,
+    r.message && `\nNote: ${r.message}`,
+  ]);
 }

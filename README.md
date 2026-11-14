@@ -3,10 +3,11 @@
 A mobile-first, single-page wedding invitation for Sandra & Arnold (SANZI27),
 across five days in Bafoussam and Limbe, Cameroon. It opens with a layered
 envelope, then scrolls through the cover, families, invitation, story,
-countdown, celebrations, programmes, RSVP and footer.
+countdown, celebrations, programmes, the guests' photo gallery, RSVP, gifts &
+contributions and the footer.
 
-Three further sections — wedding party, gifts and FAQ — are built but hidden
-until their content arrives. Switch them on in `sections` at the top of
+Two further sections — wedding party and FAQ — are built but hidden until their
+content arrives. Switch them on in `sections` at the top of
 `src/content/wedding.ts`.
 
 **Stack:** Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · Framer Motion · TypeScript
@@ -31,17 +32,26 @@ npm run typecheck
 
 ### Colours
 
-Sage, antique gold and ivory, taken from the couple's programme artwork. Every
-colour comes from a token in the `@theme` block at the top of `globals.css`, so
-changing one there re-themes the whole site — `ink` is the deep forest green
-used for headings, `gold` every ornament and eyebrow, `cocoa` the solid button
-fill, `sand` the borders.
+**Black, white and sage green** — the three colours the dress code asks guests
+for. White carries the surfaces, black the type and the solid buttons, sage
+every accent, ornament and rule. Every colour comes from a token in the
+`@theme` block at the top of `globals.css`, so changing one there re-themes the
+whole site — `ink` is the near-black used for headings, `gold` the deep sage on
+eyebrows and ornaments, `cocoa` the black button fill, `sand` the borders.
+
+The token names are historical, from an earlier cream-and-gold palette: `gold`
+now holds sage and `cocoa` near-black. They were kept because nineteen files
+reference them; the mapping is written out in the comment above the tokens.
 
 **Before changing a text token, check its contrast.** `taupe`, `stone` and
 `gold` are used for small labels and are kept at WCAG AA (4.5:1) against
-`cream`, `ivory` and `linen`; `gold` has the least headroom at 4.91:1 on linen,
-so it is the one to measure. The envelope and invitation card are deliberately
-black and gold and do not follow these tokens.
+`cream`, `ivory` and `linen`.
+
+**The one place gold survives** is the envelope and the acrylic invitation card
+(`.foil`, `.acrylic`, `.ic-*` in `globals.css`, plus the `envelope/` and
+`suite/` components). Those hexes are deliberately outside the palette, so the
+opening stays gold-on-black. The dress-code swatches in `wedding.ts` are real
+garment colours and are likewise not tokens.
 
 All copy is placeholder. Every image path is listed in `src/content/wedding.ts`.
 **If an image file is missing, the site shows a labeled placeholder** that names
@@ -56,10 +66,10 @@ in one at a time.
 | `families.jpg`                           | 2 · With Our Families (arch) | 3:4              |
 | `story.jpg`                              | 4 · Their Story              | 4:5              |
 | `party/member-1.jpg` … `member-6.jpg`    | 6 · Wedding Party (circle)   | 1:1, face centred |
-| `registry/item-1.jpg` … `item-4.jpg`     | 9 · Gifts registry           | 1:1              |
 
-To add or remove wedding party members or registry items, edit the arrays in
-`wedding.ts`. The layout adapts to the count.
+The guests' photo gallery needs no files here — those photos are uploaded by
+guests and served from Cloudinary (see below). To add or remove wedding party
+members, edit the array in `wedding.ts`; the layout adapts to the count.
 
 ### Envelope (`public/envelope/`)
 
@@ -167,7 +177,7 @@ needed); tapping a hotel moves the pin, and the arrow button opens directions.
 The page is linked from the Celebrations section and the footer. Coming back
 to the invitation from it skips the envelope for the rest of that visit.
 
-## RSVP and gift claims
+## RSVP, contributions and the photo gallery
 
 **RSVP replies go to WhatsApp.** Submitting the form opens WhatsApp with the
 guest's reply already written (name, accept/decline, number of guests, dietary
@@ -175,30 +185,51 @@ needs, email and note), addressed to `rsvp.whatsapp` in `wedding.ts`
 (currently +44 7729 468739). The guest only has to press send. To change the
 number, edit `rsvp.whatsapp` (international format, digits only).
 
-Each RSVP is also still sent to the server in the background, as below.
-
-When a guest submits an RSVP or claims a gift, the browser POSTs to
-`/api/rsvp` or `/api/gift-claim`. Each submission is:
-
-- logged on the server (Vercel → Project → **Logs**), and
-- forwarded as JSON to a webhook, if you set one:
+Each RSVP is also sent to the server in the background: it is logged
+(Vercel → Project → **Logs**) and forwarded as JSON to a webhook, if you set one:
 
 ```bash
 RSVP_WEBHOOK_URL=   # e.g. a Google Apps Script web app that appends to a Sheet
-GIFTS_WEBHOOK_URL=  # Zapier / Make / Formspree endpoints also work
 ```
 
-Set these in Vercel → Project → Settings → Environment Variables (see `.env.example`).
+Set this in Vercel → Project → Settings → Environment Variables (see `.env.example`).
 
-> **Note:** a claimed gift shows as "Claimed by you" only on that guest's
-> device. To mark an item claimed for **everyone**, set `claimed: true` on it in
-> `wedding.ts` and redeploy. For live, shared claim status, connect a datastore
-> such as Upstash Redis or Vercel Marketplace storage to `/api/gift-claim`.
+### Gifts & contributions
 
-The honeymoon fund's **Contribute** button opens
-`gifts.honeymoon.paymentUrlTemplate`, with `{amount}` replaced by the chosen
-amount (for example PayPal.me, Yoco or SnapScan links). The progress bar uses
-the `raised` and `goal` values; update them by hand.
+No registry and no payment page. The guest picks an amount (or types their own)
+and **Send on WhatsApp** opens a message with that amount written out, to the
+same number as the RSVP — the couple reply with however they would like to
+receive it, so no account details sit on a public page. Edit the amounts,
+currency and wording in `gifts` in `wedding.ts`; both the RSVP and this card
+build their links with `waLink()` in `src/lib/whatsapp.ts`.
+
+### Guests' photo gallery
+
+Guests tap the camera, pick photos, and everyone sees them: five at a time in a
+bordered strip, swipe or use the arrows for the rest, tap one to open it full
+size. Photos live on **Cloudinary's free tier**, and the browser uploads
+straight to an *unsigned* upload preset, so no secret key ships with the site.
+
+To switch it on, fill in `gallery.cloudName` and `gallery.uploadPreset` in
+`wedding.ts`:
+
+1. Make a free account at [cloudinary.com](https://cloudinary.com) and copy the
+   **Cloud name** from the dashboard.
+2. **Settings → Upload → Add upload preset**, set *Signing mode* to
+   **Unsigned**, and copy the preset name.
+3. **Settings → Security →** tick **Resource list**, which lets the site read
+   the list of photos carrying `gallery.tag`.
+
+Until both values are filled in, the section shows its empty state and says so,
+rather than failing silently. Photos are not moderated — anything a guest adds
+appears at once, and anything unwanted is deleted from the Cloudinary dashboard
+(Media Library → the `sanzi27-guests` tag).
+
+Each guest's own uploads are also kept in their browser's `localStorage` and
+shown straight away, because Cloudinary's tag listing is CDN cached for about a
+minute. Photos are shrunk to 2000px on the longest side before they leave the
+phone, and anything over `gallery.maxFileMb` or not an image is refused with a
+message.
 
 ---
 
@@ -207,13 +238,43 @@ the `raised` and `goal` values; update them by hand.
 1. Push this repo to GitHub.
 2. In Vercel, choose **Add New → Project**, import the repo and keep the
    defaults (Next.js is detected automatically).
-3. Optional: add `RSVP_WEBHOOK_URL`, `GIFTS_WEBHOOK_URL`, and
-   `NEXT_PUBLIC_SITE_URL` (your custom domain, used for link-preview images).
+3. Optional: add `RSVP_WEBHOOK_URL`, and `NEXT_PUBLIC_SITE_URL` only if the
+   canonical host differs from the one in `src/lib/site.ts`.
 4. Deploy.
+
+The site is live at **https://www.sanzi27.uk**. Vercel 308-redirects the bare
+`sanzi27.uk` to the `www` host, which is why `src/lib/site.ts` names the `www`
+address: the sitemap, the canonical tag and the link-preview URLs all come from
+there, and naming the apex would point them at URLs that redirect. If the
+primary domain is ever changed in Vercel, change that one file to match.
 
 `/calendar.ics` is generated at build time from the event start and end in
 `wedding.ts`. The **Add to Calendar** button links to it, and phones open it
 directly in their calendar app. A Google Calendar link is also shown.
+
+---
+
+## Search engines
+
+| Route             | What it does                                                        |
+| ----------------- | ------------------------------------------------------------------- |
+| `/sitemap.xml`    | The invitation and `/stay`, from `src/app/sitemap.ts`                 |
+| `/robots.txt`     | Allows crawling, hides `/api/`, points at the sitemap                 |
+| `/opengraph-image`| The 1200×630 preview card shown when the link is shared on WhatsApp   |
+
+To submit the sitemap in **Google Search Console**: pick the
+`https://www.sanzi27.uk` property (or a DNS-verified *Domain* property, which
+covers both hosts), open **Sitemaps**, and type `sitemap.xml` — the field is a
+path, so pasting the full URL is rejected as "submit a valid path to a sitemap
+on my site". The same error appears when the sitemap simply isn't deployed yet,
+so check `https://www.sanzi27.uk/sitemap.xml` returns XML first.
+
+**To keep a deployment out of search** — a preview, or the whole site if the
+couple would rather it stayed unlisted — set `NEXT_PUBLIC_NOINDEX=1`. Every page
+then carries `noindex, nofollow` and `robots.txt` disallows everything.
+
+Adding a page means adding a line to `src/app/sitemap.ts`; `lastModified` is the
+build time, so redeploying tells Google the pages were touched.
 
 ---
 
@@ -225,16 +286,19 @@ src/
     layout.tsx               fonts, metadata
     page.tsx                 renders <InvitationExperience/>
     globals.css              design tokens, base styles, typeset card
+    sitemap.ts               /sitemap.xml
+    robots.ts                /robots.txt
+    opengraph-image.tsx      link-preview card
     calendar.ics/route.ts    .ics download
     api/rsvp/route.ts
-    api/gift-claim/route.ts
+    api/gallery/route.ts     lists the guests' photos from Cloudinary
   content/wedding.ts         ← ALL content lives here
   components/
     InvitationExperience.tsx intro → scroll unlock → sections
     envelope/                EnvelopeIntro, layer loader, SVG stand-ins, card face
     sections/                one file per section
     ui/                      ImageSlot, Reveal, SectionHeading, CopyButton…
-  lib/                       calendar, webhook, storage helpers
+  lib/                       calendar, webhook, storage, whatsapp, cloudinary helpers
 public/
   envelope/                  the four envelope PNGs
   images/                    client photos

@@ -147,7 +147,7 @@ function PlaceRow({
   return (
     <div
       className={`card flex gap-4 p-4 transition-[border-color,box-shadow] duration-300 ${
-        active ? "border-gold/60 shadow-[0_14px_34px_-18px_rgba(147,81,47,0.55)]" : ""
+        active ? "border-gold/60 shadow-[0_14px_34px_-18px_rgba(76,96,66,0.45)]" : ""
       }`}
     >
       <button

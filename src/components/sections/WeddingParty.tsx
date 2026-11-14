@@ -68,7 +68,7 @@ export function WeddingParty() {
               viewport={{ once: true, amount: 0.05 }}
               transition={{ duration: 0.9, delay: Math.min(i, 3) * 0.1, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="relative aspect-square w-full overflow-hidden rounded-full bg-linen shadow-[0_18px_40px_-24px_rgba(60,40,25,0.6)]">
+              <div className="relative aspect-square w-full overflow-hidden rounded-full bg-linen shadow-[0_18px_40px_-24px_rgba(18,20,19,0.4)]">
                 <ImageSlot image={m.image} sizes="260px" />
               </div>
               <p className="mt-6 text-[0.6rem] font-medium uppercase tracking-[0.26em] text-gold">{m.role}</p>

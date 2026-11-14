@@ -1,27 +1,34 @@
 @import "tailwindcss";
 
 /* ── Design tokens ──────────────────────────────────────────────────────────
-   Sage, antique gold and ivory, taken from the couple's programme artwork:
-   soft green leaves over warm off-white paper, gold for every ornament, and
-   a deep forest green where the old palette used near-black brown. Change
-   these to re-theme the whole site. Text tokens (taupe, stone, gold) are
-   tuned to pass WCAG AA 4.5:1 on cream, ivory and linen, so small labels
-   stay readable. ("gold" is the accent colour used for eyebrows, ornaments
-   and highlights; "cocoa" fills the solid buttons and is now a deep sage.) */
+   Black, white and sage green — the three colours the dress code asks guests
+   for. White carries the surfaces (cards, dialogs, fields), black carries the
+   type and the solid buttons, and sage carries every accent, ornament, rule
+   and highlight. Change these to re-theme the whole site.
+
+   The names are historical (an earlier cream-and-gold palette): "gold" is now
+   the deep sage used for eyebrows, ornaments and figures, and "cocoa" is now
+   near-black, the solid button fill. Text tokens (taupe, stone, gold) are
+   tuned to pass WCAG AA 4.5:1 on white and on the near-white page, so small
+   labels stay readable.
+
+   Real antique gold survives in exactly one place — the envelope and the
+   acrylic invitation card (.foil, .acrylic, .ic-* below, and the envelope /
+   crest components). Those hexes are deliberately not part of this palette. */
 @theme {
-  --color-cream: #f2efe6;
+  --color-cream: #f6f7f4;
   /* Backdrop behind the acrylic card once the lights go down */
   --color-noir: #0e0e0f;
-  --color-ivory: #faf8f2;
-  --color-linen: #e7e5d8;
-  --color-sand: #d3d6c4;
-  --color-taupe: #58634f;
-  --color-stone: #4d5a46;
-  --color-ink: #2b3a2b;
-  --color-gold: #7a5c20;
-  --color-gold-soft: #c7a95f;
-  --color-cocoa: #45543d;
-  --color-backdrop: #a8b096;
+  --color-ivory: #ffffff;
+  --color-linen: #e9ece5;
+  --color-sand: #d5dbcd;
+  --color-taupe: #5d655b;
+  --color-stone: #4b514a;
+  --color-ink: #121413;
+  --color-gold: #4f6042;
+  --color-gold-soft: #9caf88;
+  --color-cocoa: #141514;
+  --color-backdrop: #9caf88;
   /* The couple's sage, the same green the dress code asks guests for */
   --color-sage: #9caf88;
   --color-wax: #7e2a2a;
@@ -80,15 +87,15 @@
     border: 1px solid color-mix(in srgb, var(--color-sand) 75%, transparent);
     border-radius: 1rem;
     background: var(--color-ivory);
-    box-shadow: 0 10px 30px -18px rgba(43, 58, 43, 0.32);
+    box-shadow: 0 10px 30px -18px rgba(18, 20, 19, 0.18);
   }
 
   /* Subtle paper grain, layered on cream backgrounds */
   .paper {
     background-color: var(--color-cream);
     background-image:
-      radial-gradient(rgba(92, 104, 86, 0.055) 1px, transparent 1px),
-      radial-gradient(rgba(92, 104, 86, 0.04) 1px, transparent 1px);
+      radial-gradient(rgba(18, 20, 19, 0.045) 1px, transparent 1px),
+      radial-gradient(rgba(18, 20, 19, 0.035) 1px, transparent 1px);
     background-size: 3px 3px, 7px 7px;
     background-position: 0 0, 1px 2px;
   }
@@ -123,7 +130,7 @@
       border: 1px solid color-mix(in srgb, var(--color-sand) 75%, transparent);
       border-radius: 1rem;
       background: var(--color-ivory);
-      box-shadow: 0 10px 30px -18px rgba(43, 58, 43, 0.32);
+      box-shadow: 0 10px 30px -18px rgba(18, 20, 19, 0.18);
     }
   }
 
@@ -142,6 +149,61 @@
 
   @media (prefers-reduced-motion: reduce) {
     .prog-track {
+      scroll-behavior: auto;
+    }
+  }
+
+  /* ── Guest photo strip ────────────────────────────────────────────────────
+     A horizontally scrolled row of photo cards inside a bordered frame, after
+     the client's blueprint. Five cards are visible on a desktop; on narrower
+     screens fewer fit and the next one is cut off at the frame's edge, so the
+     row reads as swipeable. Card width is derived from how many should show,
+     so there is one number to change per breakpoint. */
+  .gal-frame {
+    --gal-gap: 0.6rem;
+    --gal-visible: 2.15;
+    border: 1px solid color-mix(in srgb, var(--color-sand) 85%, transparent);
+    border-radius: 1rem;
+    background: var(--color-ivory);
+    box-shadow: 0 10px 30px -18px rgba(18, 20, 19, 0.18);
+  }
+  @media (width >= 40rem) {
+    .gal-frame {
+      --gal-gap: 0.75rem;
+      --gal-visible: 3.15;
+    }
+  }
+  @media (width >= 64rem) {
+    .gal-frame {
+      --gal-gap: 0.85rem;
+      --gal-visible: 5;
+    }
+  }
+  .gal-track {
+    display: flex;
+    gap: var(--gal-gap);
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scroll-behavior: smooth;
+    touch-action: pan-x pan-y;
+  }
+  .gal-card {
+    flex: 0 0 calc((100% - (var(--gal-visible) - 1) * var(--gal-gap)) / var(--gal-visible));
+    scroll-snap-align: start;
+  }
+  /* While a pointer is dragging the strip, suppress the smooth-scroll easing so
+     the row follows the finger exactly; the momentum glide is run in JS. */
+  .gal-track.is-dragging {
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+    cursor: grabbing;
+  }
+  .gal-track.is-dragging img {
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gal-track {
       scroll-behavior: auto;
     }
   }
@@ -171,10 +233,10 @@
   .btn-solid {
     background: var(--color-cocoa);
     color: var(--color-ivory);
-    box-shadow: 0 6px 16px -8px rgba(90, 52, 34, 0.6);
+    box-shadow: 0 6px 16px -8px rgba(18, 20, 19, 0.45);
   }
   .btn-solid:hover {
-    background: #66392a;
+    background: #2b2e2b;
   }
   .btn-outline {
     border: 1px solid color-mix(in srgb, var(--color-ink) 35%, transparent);
@@ -202,7 +264,7 @@
     transition: border-color 0.2s;
   }
   .field:focus {
-    border-color: var(--color-gold);
+    border-color: var(--color-sage);
   }
 
   .no-scrollbar {

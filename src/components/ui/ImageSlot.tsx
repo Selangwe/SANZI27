@@ -72,12 +72,12 @@ function Placeholder({
       className={`absolute inset-0 flex flex-col items-center gap-3 p-4 text-center ${
         labelAt === "top" ? "justify-start pt-[max(4rem,12dvh)]" : "justify-center"
       } ${
-        dark ? "bg-[#2f352c] text-[#e6e4d6]" : "bg-linen text-stone"
+        dark ? "bg-[#191b19] text-[#e9ece5]" : "bg-linen text-stone"
       }`}
       style={{
         backgroundImage: dark
           ? "repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0 12px, transparent 12px 24px)"
-          : "repeating-linear-gradient(135deg, rgba(122,109,92,0.06) 0 12px, transparent 12px 24px)",
+          : "repeating-linear-gradient(135deg, rgba(18,20,19,0.05) 0 12px, transparent 12px 24px)",
       }}
     >
       {!pending && (

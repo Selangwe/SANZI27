@@ -19,13 +19,15 @@ export function Families() {
     <Section id="families" className="paper">
       <div className="mx-auto flex max-w-md flex-col items-center text-center">
         <Reveal className="relative z-10 w-full">
-          <h2 className="font-tall text-[3.4rem] uppercase leading-[0.9] tracking-[-0.01em] text-gold sm:text-7xl">
+          {/* Near-black like every other section title: sage is an accent here,
+              not a headline colour */}
+          <h2 className="font-tall text-[3.4rem] uppercase leading-[0.9] tracking-[-0.01em] text-ink sm:text-7xl">
             {families.title}
           </h2>
         </Reveal>
 
         <Reveal delay={0.1} className="-mt-3 w-[84%] sm:-mt-4">
-          <div className="relative aspect-[3/4] overflow-hidden rounded-t-full shadow-[0_24px_50px_-28px_rgba(60,40,25,0.55)]">
+          <div className="relative aspect-[3/4] overflow-hidden rounded-t-full shadow-[0_24px_50px_-28px_rgba(18,20,19,0.38)]">
             <ImageSlot image={families.image} sizes="(max-width: 768px) 84vw, 380px" />
           </div>
         </Reveal>

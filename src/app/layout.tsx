@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Instrument_Serif, Jost, Pinyon_Script } from "next/font/google";
 import { wedding } from "@/content/wedding";
+import { indexable, siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -37,27 +38,29 @@ const { partnerOne, partnerTwo } = wedding.couple;
 const title = `${partnerOne.firstName} & ${partnerTwo.firstName}: Wedding Invitation`;
 const description = `${wedding.couple.weddingName}: join us in ${wedding.venue.name}, Cameroon, from ${wedding.event.displayDate}.`;
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "http://localhost:3000");
-
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description,
+  // The preview image is drawn by src/app/opengraph-image.tsx, which Next wires
+  // up automatically — no entry here, so there is one place to change it.
   openGraph: {
     title,
     description,
     type: "website",
-    images: [{ url: wedding.cover.image.src }],
+    url: "/",
+    siteName: wedding.couple.weddingName,
   },
-  robots: { index: false, follow: false },
+  alternates: { canonical: "/" },
+  // Indexable so the sitemap submitted to Google Search Console does something;
+  // set NEXT_PUBLIC_NOINDEX=1 on preview deployments to keep those out of search.
+  robots: indexable
+    ? { index: true, follow: true }
+    : { index: false, follow: false },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f2efe6",
+  themeColor: "#f6f7f4",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

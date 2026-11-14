@@ -3,9 +3,9 @@
  *  WEDDING CONTENT — the single file to edit when the client sends details.
  * ─────────────────────────────────────────────────────────────────────────────
  *  Every name, date, paragraph, link and image path on the site lives here.
- *  Couple, dates, events, dress codes, programme and story are the real
- *  details; the wedding party, gifts and FAQ are still placeholders and are
- *  hidden (see `sections`).
+ *  Couple, dates, events, dress codes, programme, story, contributions and
+ *  the photo gallery are the real details; the wedding party and FAQ are
+ *  still placeholders and are hidden (see `sections`).
  *
  *  Images: drop files into /public at the paths listed below (or change the
  *  paths). Any image that is missing renders as a labeled placeholder slot,
@@ -55,7 +55,10 @@ export const wedding = {
   /** Sections still waiting on real content stay hidden until switched on. */
   sections: {
     weddingParty: false,
-    gifts: false,
+    /** The contribution card (gifts & contributions) */
+    gifts: true,
+    /** The guests' photo wall */
+    gallery: true,
     faq: false,
   },
 
@@ -593,66 +596,27 @@ export const wedding = {
     thankYouDecline: "You'll be dearly missed. Thank you for letting us know.",
   },
 
-  /* ── Gifts (placeholder; hidden until sections.gifts) ───────────────────── */
+  /* ── Gifts & contributions ──────────────────────────────────────────────── */
+  /**
+   * No registry: guests who ask how to give choose an amount here and the
+   * button opens WhatsApp with the amount written out, addressed to the same
+   * number as the RSVP (`rsvp.whatsapp`). The couple reply with however they
+   * would like to receive it, so no account details sit on a public page.
+   */
   gifts: {
-    heading: "Gifts for our next chapter",
+    heading: "Gifts & contributions",
     intro:
-      "Your love and presence are more than enough. For those who have asked, we've put together a small registry and a fund for our honeymoon.",
-    /** Prices are shown as e.g. "R2,400" */
-    currency: { symbol: "R", thousandsSeparator: "," },
-    registry: [
-      {
-        id: "dinner-set",
-        name: "Stoneware Dinner Set",
-        price: 2400,
-        /** Optional store link — opens alongside the claim */
-        url: "",
-        /** Set true once a guest has claimed it (shared with everyone) */
-        claimed: false,
-        image: { src: "/images/registry/item-1.jpg", alt: "Stoneware dinner set", label: "Registry item 1 image" },
-      },
-      {
-        id: "linen-set",
-        name: "Belgian Linen Bedding",
-        price: 3200,
-        url: "",
-        claimed: false,
-        image: { src: "/images/registry/item-2.jpg", alt: "Linen bedding", label: "Registry item 2 image" },
-      },
-      {
-        id: "espresso",
-        name: "Espresso Machine",
-        price: 5800,
-        url: "",
-        claimed: false,
-        image: { src: "/images/registry/item-3.jpg", alt: "Espresso machine", label: "Registry item 3 image" },
-      },
-      {
-        id: "glassware",
-        name: "Crystal Glassware",
-        price: 1600,
-        url: "",
-        claimed: true,
-        image: { src: "/images/registry/item-4.jpg", alt: "Crystal glassware", label: "Registry item 4 image" },
-      },
-    ] satisfies {
-      id: string;
-      name: string;
-      price: number;
-      url: string;
-      claimed: boolean;
-      image: ImageAsset;
-    }[],
-    honeymoon: {
-      heading: "Honeymoon Fund",
-      description: "Help us toast to forever on the Amalfi Coast: a sunset dinner, a boat day, a few too many gelatos.",
-      goal: 60000,
-      raised: 23500,
-      presets: [250, 500, 1000, 2500],
-      /** "{amount}" is replaced with the chosen amount. Leave "" to hide the button. */
-      paymentUrlTemplate: "https://www.paypal.com/paypalme/yourhandle/{amount}",
-      contributeLabel: "Contribute",
-    },
+      "Your presence at our celebrations is the greatest gift of all. For those who have asked how they can give, a contribution towards our new home and our first year together would mean the world.",
+    /** Amounts are shown as e.g. "FCFA 25,000" */
+    currency: { symbol: "FCFA ", thousandsSeparator: "," },
+    /** The amounts offered as pills; guests can also type their own */
+    presets: [10000, 25000, 50000, 100000],
+    amountLabel: "Choose an amount",
+    customPlaceholder: "Or enter your own amount",
+    contributeLabel: "Send on WhatsApp",
+    /** Small print under the button */
+    note: "This opens WhatsApp with your message ready — nothing is charged here, and we will reply with the details.",
+    thankYou: "Thank you, truly.",
   },
 
   /* ── FAQ (placeholder; hidden until sections.faq) ───────────────────────── */
@@ -684,6 +648,39 @@ export const wedding = {
         a: "Absolutely. Please let us know about any allergies or dietary requirements in your RSVP and we'll take care of you.",
       },
     ],
+  },
+
+  /* ── Guest photo gallery ────────────────────────────────────────────────── */
+  /**
+   * Guests tap the camera and add their own photos, which everyone then sees.
+   * Photos are stored on Cloudinary's free tier: the browser uploads straight
+   * to an *unsigned* upload preset, so no secret key ships with the site.
+   *
+   * To switch it on:
+   *   1. Make a free account at cloudinary.com and copy the "Cloud name".
+   *   2. Settings → Upload → Add upload preset → Signing mode: Unsigned.
+   *      Copy the preset name.
+   *   3. Settings → Security → tick "Resource list" (lets the site read the
+   *      list of photos for the tag below).
+   *   4. Paste both below. Until then the section shows its empty state and
+   *      explains that uploads are not configured yet.
+   */
+  gallery: {
+    heading: "Share your photos",
+    intro:
+      "Add the moments you capture with us — from the court to the beach — and see everyone else's here too.",
+    uploadLabel: "Add photos",
+    nameLabel: "Your name (optional)",
+    emptyLabel: "Be the first to add a photo",
+    viewLabel: "Tap a photo to see it full size",
+    /** Cloudinary cloud name, e.g. "sanzi27" */
+    cloudName: "agjtegyr",
+    /** Unsigned upload preset name */
+    uploadPreset: "sanzi27_guests",
+    /** Every photo is tagged with this, and the gallery lists that tag */
+    tag: "sanzi27-guests",
+    /** Largest file a guest may pick, in megabytes (bigger photos are shrunk first) */
+    maxFileMb: 12,
   },
 
   /* ── Footer ─────────────────────────────────────────────────────────────── */
