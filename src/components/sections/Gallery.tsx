@@ -276,8 +276,11 @@ function Strip({
       </div>
 
       {photos.length === 0 && (
-        <p className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-[0.68rem] uppercase tracking-[0.25em] text-taupe">
-          {loading ? "Loading photos…" : emptyLabel}
+        <p className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 text-center">
+          {/* On a chip, so the line stays legible where it crosses a placeholder */}
+          <span className="rounded-full bg-ivory/95 px-4 py-2 text-[0.68rem] uppercase tracking-[0.25em] text-taupe shadow-[0_6px_18px_-12px_rgba(18,20,19,0.5)]">
+            {loading ? "Loading photos…" : emptyLabel}
+          </span>
         </p>
       )}
 
