@@ -660,8 +660,10 @@ export const wedding = {
    *   1. Make a free account at cloudinary.com and copy the "Cloud name".
    *   2. Settings → Upload → Add upload preset → Signing mode: Unsigned.
    *      Copy the preset name.
-   *   3. Settings → Security → tick "Resource list" (lets the site read the
-   *      list of photos for the tag below).
+   *   3. Settings → Security → Restricted image types → make sure
+   *      "Resource list" is UNTICKED. That panel lists what is blocked, and it
+   *      is ticked by default, which stops the site reading the list of photos
+   *      for the tag below.
    *   4. Paste both below. Until then the section shows its empty state and
    *      explains that uploads are not configured yet.
    */

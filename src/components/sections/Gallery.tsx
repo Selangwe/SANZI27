@@ -27,7 +27,7 @@ export function Gallery() {
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
   const [mine, setMine] = useState<GalleryPhoto[]>([]);
   const [configured, setConfigured] = useState(true);
-  /** False when Cloudinary's "Resource list" setting is still switched off */
+  /** False while Cloudinary still restricts the tag listing (see the note below) */
   const [listable, setListable] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -205,9 +205,9 @@ export function Gallery() {
           <Reveal className="card mx-auto mt-6 max-w-xl px-6 py-6 text-center">
             <p className="text-sm leading-relaxed text-stone">
               Photos are uploading, but each guest can only see their own so far. In Cloudinary, go to{" "}
-              <strong className="font-medium text-ink">Settings → Security</strong> and tick{" "}
-              <strong className="font-medium text-ink">Resource list</strong>, which lets the site read the shared
-              gallery.
+              <strong className="font-medium text-ink">Settings → Security → Restricted image types</strong> and{" "}
+              <strong className="font-medium text-ink">untick “Resource list”</strong> — that panel lists what is
+              blocked, so a tick there is what stops the site reading the shared gallery.
             </p>
           </Reveal>
         )}

@@ -6,7 +6,10 @@ import { toPhoto, type GalleryPhoto } from "@/lib/cloudinary";
  * Lists the guests' photos.
  *
  * Cloudinary publishes every asset carrying a tag as a JSON list at
- * `/image/list/<tag>.json` (Settings → Security → "Resource list"). It is read
+ * `/image/list/<tag>.json`, as long as "Resource list" is NOT ticked under
+ * Settings → Security → Restricted image types (that panel is a list of
+ * restrictions, so a tick switches the listing off; it is ticked by default on
+ * a new account). It is read
  * here, on the server, rather than in the browser: the response is normalised
  * into exactly what the gallery needs, and we control its caching instead of
  * inheriting Cloudinary's CDN headers.
@@ -38,11 +41,14 @@ export async function GET() {
     // 404 is the normal answer while no photo carries the tag yet.
     if (res.status === 404) return NextResponse.json({ configured: true, photos: [] as GalleryPhoto[] });
 
-    // 401 means "Resource list" is still switched off in Cloudinary → Settings →
-    // Security. Uploading works, but nobody can see anybody else's photos, so
-    // this is a setup problem to report rather than a passing glitch.
+    // 401 means "Resource list" is still ticked under Cloudinary → Settings →
+    // Security → Restricted image types, i.e. the listing is restricted.
+    // Uploading works, but nobody can see anybody else's photos, so this is a
+    // setup problem to report rather than a passing glitch.
     if (res.status === 401) {
-      console.warn("[gallery] Cloudinary resource list is disabled (Settings → Security → Resource list)");
+      console.warn(
+        "[gallery] Cloudinary blocks the tag listing: untick \"Resource list\" under Settings → Security → Restricted image types",
+      );
       return NextResponse.json({ configured: true, listable: false, photos: [] as GalleryPhoto[] });
     }
 

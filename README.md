@@ -217,8 +217,11 @@ To switch it on, fill in `gallery.cloudName` and `gallery.uploadPreset` in
    **Cloud name** from the dashboard.
 2. **Settings → Upload → Add upload preset**, set *Signing mode* to
    **Unsigned**, and copy the preset name.
-3. **Settings → Security →** tick **Resource list**, which lets the site read
-   the list of photos carrying `gallery.tag`.
+3. **Settings → Security → Restricted image types →** make sure
+   **Resource list** is **unticked**. That panel is a list of *restrictions*, so
+   a tick there blocks the site from reading the photos carrying `gallery.tag` —
+   and it is ticked by default on a new account. Unticking it is what turns the
+   shared gallery on.
 
 Until both values are filled in, the section shows its empty state and says so,
 rather than failing silently. Photos are not moderated — anything a guest adds
